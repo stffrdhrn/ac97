@@ -12,8 +12,9 @@
 ////                                                             ////
 /////////////////////////////////////////////////////////////////////
 ////                                                             ////
-//// Copyright (C) 2001 Rudolf Usselmann                         ////
-////                    rudi@asics.ws                            ////
+//// Copyright (C) 2000-2002 Rudolf Usselmann                    ////
+////                         www.asics.ws                        ////
+////                         rudi@asics.ws                       ////
 ////                                                             ////
 //// This source file may be used and distributed without        ////
 //// restriction provided that this copyright statement is not   ////
@@ -38,16 +39,21 @@
 
 //  CVS Log
 //
-//  $Id: ac97_rf.v,v 1.3 2002-03-05 04:44:05 rudi Exp $
+//  $Id: ac97_rf.v,v 1.4 2002-09-19 06:30:56 rudi Exp $
 //
-//  $Date: 2002-03-05 04:44:05 $
-//  $Revision: 1.3 $
+//  $Date: 2002-09-19 06:30:56 $
+//  $Revision: 1.4 $
 //  $Author: rudi $
 //  $Locker:  $
 //  $State: Exp $
 //
 // Change History:
 //               $Log: not supported by cvs2svn $
+//               Revision 1.3  2002/03/05 04:44:05  rudi
+//
+//               - Fixed the order of the thrash hold bits to match the spec.
+//               - Many minor synthesis cleanup items ...
+//
 //               Revision 1.2  2001/08/10 08:09:42  rudi
 //
 //               - Removed RTY_O output.
