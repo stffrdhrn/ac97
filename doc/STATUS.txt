@@ -2,13 +2,12 @@ This file describes the current status of the checked in HDL code.
 Please submit all bugs/comments/suggestions regarding the AC97 Controller
 core to: cores@opencores.org
 
-Need Help
----------
-I'm looking for help in verifying the core. If you think you can help,
-please send an email to the list or to me directly.
-
 STATUS
 ======
+
+Update (19/9/2002)
+-----------------
+- Core successfully tested in hardware
 
 Update (8/2/2001)
 -----------------
