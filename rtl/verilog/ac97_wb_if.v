@@ -38,16 +38,21 @@
 
 //  CVS Log
 //
-//  $Id: ac97_wb_if.v,v 1.1 2001-08-03 06:54:50 rudi Exp $
+//  $Id: ac97_wb_if.v,v 1.2 2001-08-10 08:09:42 rudi Exp $
 //
-//  $Date: 2001-08-03 06:54:50 $
-//  $Revision: 1.1 $
+//  $Date: 2001-08-10 08:09:42 $
+//  $Revision: 1.2 $
 //  $Author: rudi $
 //  $Locker:  $
 //  $State: Exp $
 //
 // Change History:
 //               $Log: not supported by cvs2svn $
+//               Revision 1.1  2001/08/03 06:54:50  rudi
+//
+//
+//               - Changed to new directory structure
+//
 //               Revision 1.1.1.1  2001/05/19 02:29:16  rudi
 //               Initial Checkin
 //
@@ -129,7 +134,7 @@ always @(posedge clk)
 	endcase
 
 always @(posedge clk)
-	re1 <= #1 !re2 & wb_cyc_i & wb_stb_i & !wb_we_i & `REG_SEL;
+	re1 <= #1 !re2 & wb_cyc_i & wb_stb_i & !wb_we_i & `AC97_REG_SEL;
 
 always @(posedge clk)
 	re2 <= #1 re & wb_cyc_i & wb_stb_i & !wb_we_i ;
@@ -139,7 +144,7 @@ assign re = re1 & !re2 & wb_cyc_i & wb_stb_i & !wb_we_i;
 assign rf_re = re & (wb_addr_i[6:2] < 8);
 
 always @(posedge clk)
-	we1 <= #1 !we & wb_cyc_i & wb_stb_i & wb_we_i & `REG_SEL;
+	we1 <= #1 !we & wb_cyc_i & wb_stb_i & wb_we_i & `AC97_REG_SEL;
 
 always @(posedge clk)
 	we2 <= #1 we1 & wb_cyc_i & wb_stb_i & wb_we_i;

@@ -38,16 +38,21 @@
 
 //  CVS Log
 //
-//  $Id: ac97_dma_if.v,v 1.1 2001-08-03 06:54:49 rudi Exp $
+//  $Id: ac97_dma_if.v,v 1.2 2001-08-10 08:09:42 rudi Exp $
 //
-//  $Date: 2001-08-03 06:54:49 $
-//  $Revision: 1.1 $
+//  $Date: 2001-08-10 08:09:42 $
+//  $Revision: 1.2 $
 //  $Author: rudi $
 //  $Locker:  $
 //  $State: Exp $
 //
 // Change History:
 //               $Log: not supported by cvs2svn $
+//               Revision 1.1  2001/08/03 06:54:49  rudi
+//
+//
+//               - Changed to new directory structure
+//
 //               Revision 1.1.1.1  2001/05/19 02:29:18  rudi
 //               Initial Checkin
 //
@@ -108,7 +113,7 @@ ac97_dma_req u1(.clk(		clk		),
 		.dma_ack(	dma_ack[1]	)
 		);
 
-`ifdef CENTER
+`ifdef AC97_CENTER
 ac97_dma_req u2(.clk(		clk		),
 		.rst(		rst		),
 		.cfg(		oc2_cfg		),
@@ -121,7 +126,7 @@ ac97_dma_req u2(.clk(		clk		),
 assign dma_req[2] = 0;
 `endif
 
-`ifdef SURROUND
+`ifdef AC97_SURROUND
 ac97_dma_req u3(.clk(		clk		),
 		.rst(		rst		),
 		.cfg(		oc3_cfg		),
@@ -144,7 +149,7 @@ assign dma_req[3] = 0;
 assign dma_req[4] = 0;
 `endif
 
-`ifdef LFE
+`ifdef AC97_LFE
 ac97_dma_req u5(.clk(		clk		),
 		.rst(		rst		),
 		.cfg(		oc5_cfg		),
@@ -157,7 +162,7 @@ ac97_dma_req u5(.clk(		clk		),
 assign dma_req[5] = 0;
 `endif
 
-`ifdef SIN
+`ifdef AC97_SIN
 ac97_dma_req u6(.clk(		clk		),
 		.rst(		rst		),
 		.cfg(		ic0_cfg		),
@@ -180,7 +185,7 @@ assign dma_req[6] = 0;
 assign dma_req[7] = 0;
 `endif
 
-`ifdef MICIN
+`ifdef AC97_MICIN
 ac97_dma_req u8(.clk(		clk		),
 		.rst(		rst		),
 		.cfg(		ic2_cfg		),

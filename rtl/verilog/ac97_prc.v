@@ -38,16 +38,21 @@
 
 //  CVS Log
 //
-//  $Id: ac97_prc.v,v 1.1 2001-08-03 06:54:50 rudi Exp $
+//  $Id: ac97_prc.v,v 1.2 2001-08-10 08:09:42 rudi Exp $
 //
-//  $Date: 2001-08-03 06:54:50 $
-//  $Revision: 1.1 $
+//  $Date: 2001-08-10 08:09:42 $
+//  $Revision: 1.2 $
 //  $Author: rudi $
 //  $Locker:  $
 //  $State: Exp $
 //
 // Change History:
 //               $Log: not supported by cvs2svn $
+//               Revision 1.1  2001/08/03 06:54:50  rudi
+//
+//
+//               - Changed to new directory structure
+//
 //               Revision 1.1.1.1  2001/05/19 02:29:17  rudi
 //               Initial Checkin
 //
@@ -192,7 +197,7 @@ ac97_fifo_ctrl u1(
 		.en_out_l(	o4_re_l		)
 		);
 
-`ifdef CENTER
+`ifdef AC97_CENTER
 // Output Channel 2 (Out Slot 6)
 ac97_fifo_ctrl u2(
 		.clk(		clk 		),
@@ -210,7 +215,7 @@ assign o6_re = 0;
 assign o6_re_l = 0;
 `endif
 
-`ifdef SURROUND
+`ifdef AC97_SURROUND
 // Output Channel 3 (Out Slot 7)
 ac97_fifo_ctrl u3(
 		.clk(		clk 		),
@@ -243,7 +248,7 @@ assign o8_re = 0;
 assign o8_re_l = 0;
 `endif
 
-`ifdef LFE
+`ifdef AC97_LFE
 // Output Channel 5 (Out Slot 9)
 ac97_fifo_ctrl u5(
 		.clk(		clk 		),
@@ -261,7 +266,7 @@ assign o9_re = 0;
 assign o9_re_l = 0;
 `endif
 
-`ifdef SIN
+`ifdef AC97_SIN
 // Input Channel 0 (In Slot 3)
 ac97_fifo_ctrl u6(
 		.clk(		clk 		),
@@ -292,7 +297,7 @@ assign i3_we = 0;
 assign i4_we = 0;
 `endif
 
-`ifdef MICIN
+`ifdef AC97_MICIN
 // Input Channel 2 (In Slot 6)
 ac97_fifo_ctrl u8(
 		.clk(		clk 		),

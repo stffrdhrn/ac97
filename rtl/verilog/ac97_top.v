@@ -37,16 +37,21 @@
 
 //  CVS Log
 //
-//  $Id: ac97_top.v,v 1.1 2001-08-03 06:54:50 rudi Exp $
+//  $Id: ac97_top.v,v 1.2 2001-08-10 08:09:42 rudi Exp $
 //
-//  $Date: 2001-08-03 06:54:50 $
-//  $Revision: 1.1 $
+//  $Date: 2001-08-10 08:09:42 $
+//  $Revision: 1.2 $
 //  $Author: rudi $
 //  $Locker:  $
 //  $State: Exp $
 //
 // Change History:
 //               $Log: not supported by cvs2svn $
+//               Revision 1.1  2001/08/03 06:54:50  rudi
+//
+//
+//               - Changed to new directory structure
+//
 //               Revision 1.1.1.1  2001/05/19 02:29:14  rudi
 //               Initial Checkin
 //
@@ -56,18 +61,19 @@
 
 `include "ac97_defines.v"
 
-module ac97_top(clk, rst,
+module ac97_top(clk_i, rst_i,
 
 	wb_data_i, wb_data_o, wb_addr_i, wb_sel_i, wb_we_i, wb_cyc_i,
 	wb_stb_i, wb_ack_o, wb_err_o, 
 
-	int, dma_req, dma_ack,
-	suspended,
+	int_o, dma_req_o, dma_ack_i,
+	suspended_o,
 
-	bit_clk, sync, sdata_out, sdata_in, ac97_reset_
+	bit_clk_pad_i, sync_pad_o, sdata_pad_o, sdata_pad_i,
+	ac97_reset_pad_o_
 	);
 
-input		clk, rst;
+input		clk_i, rst_i;
 
 // --------------------------------------
 // WISHBONE SLAVE INTERFACE 
@@ -83,21 +89,21 @@ output		wb_err_o;
 
 // --------------------------------------
 // Misc Signals
-output		int;
-output	[8:0]	dma_req;
-input	[8:0]	dma_ack;
+output		int_o;
+output	[8:0]	dma_req_o;
+input	[8:0]	dma_ack_i;
 
 // --------------------------------------
 // Suspend Resume Interface
-output		suspended;
+output		suspended_o;
 
 // --------------------------------------
 // AC97 Codec Interface
-input		bit_clk;
-output		sync;
-output		sdata_out;
-input		sdata_in;
-output		ac97_reset_;
+input		bit_clk_pad_i;
+output		sync_pad_o;
+output		sdata_pad_o;
+input		sdata_pad_i;
+output		ac97_reset_pad_o_;
 
 ////////////////////////////////////////////////////////////////////
 //
@@ -124,7 +130,6 @@ wire	[19:0]	in_slt4;
 wire	[19:0]	in_slt6;
 
 // Serial IO Controller Interface
-wire		sync;
 wire		ld;
 wire		valid;
 wire	[5:0]	out_le;
@@ -159,7 +164,6 @@ wire	[31:0]	rf_dout;
 wire	[31:0]	rf_din;
 wire		rf_we;
 wire		rf_re;
-wire		int;
 wire		ac97_rst_force;
 wire		resume_req;
 wire		crac_we;
@@ -195,16 +199,16 @@ wire		crac_wr_done, crac_rd_done;
 //
 
 // Sync Valid to WISHBONE Clock
-always @(posedge clk)
+always @(posedge clk_i)
 	valid_s1 <= #1 valid;
 
-always @(posedge clk)
+always @(posedge clk_i)
 	valid_s <= #1 valid_s1;
 
-always @(posedge clk)
+always @(posedge clk_i)
 	in_valid_s1 <= #1 in_valid;
 
-always @(posedge clk)
+always @(posedge clk_i)
 	in_valid_s <= #1 in_valid_s1;
 
 // "valid_s" Indicates when any of the outputs to the output S/R may
@@ -225,8 +229,8 @@ assign i6_mode = ic2_cfg[3:2];
 //
 
 ac97_sout	u0(
-		.clk(		bit_clk		),
-		.rst(		rst		),
+		.clk(		bit_clk_pad_i	),
+		.rst(		rst_i		),
 		.so_ld(		ld		),
 		.slt0(		out_slt0	),
 		.slt1(		out_slt1	),
@@ -237,12 +241,12 @@ ac97_sout	u0(
 		.slt7(		out_slt7	),
 		.slt8(		out_slt8	),
 		.slt9(		out_slt9	),
-		.sdata_out(	sdata_out	)
+		.sdata_out(	sdata_pad_o	)
 		);
 
 ac97_sin	u1(
-		.clk(		bit_clk		),
-		.rst(		rst		),
+		.clk(		bit_clk_pad_i	),
+		.rst(		rst_i		),
 		.out_le(	out_le		),
 		.slt0(		in_slt0		),
 		.slt1(		in_slt1		),
@@ -250,17 +254,17 @@ ac97_sin	u1(
 		.slt3(		in_slt3		),
 		.slt4(		in_slt4		),
 		.slt6(		in_slt6		),
-		.sdata_in(	sdata_in	)
+		.sdata_in(	sdata_pad_i	)
 		);
 
 ac97_soc	u2(
-		.clk(		bit_clk		),
-		.wclk(		clk		),
-		.rst(		rst		),
+		.clk(		bit_clk_pad_i	),
+		.wclk(		clk_i		),
+		.rst(		rst_i		),
 		.ps_ce(		ps_ce		),
 		.resume(	resume_req	),
-		.suspended(	suspended	),
-		.sync(		sync		),
+		.suspended(	suspended_o	),
+		.sync(		sync_pad_o	),
 		.out_le(	out_le		),
 		.in_valid(	in_valid	),
 		.ld(		ld		),
@@ -268,8 +272,8 @@ ac97_soc	u2(
 		);
 
 ac97_out_fifo	u3(
-		.clk(		clk		),
-		.rst(		rst		),
+		.clk(		clk_i		),
+		.rst(		rst_i		),
 		.en(		oc0_cfg[0]	),
 		.mode(		o3_mode		),
 		.din(		wb_din		),
@@ -282,8 +286,8 @@ ac97_out_fifo	u3(
 		);
 
 ac97_out_fifo	u4(
-		.clk(		clk		),
-		.rst(		rst		),
+		.clk(		clk_i		),
+		.rst(		rst_i		),
 		.en(		oc1_cfg[0]	),
 		.mode(		o4_mode		),
 		.din(		wb_din		),
@@ -295,10 +299,10 @@ ac97_out_fifo	u4(
 		.empty(		o4_empty	)
 		);
 
-`ifdef CENTER
+`ifdef AC97_CENTER
 ac97_out_fifo	u5(
-		.clk(		clk		),
-		.rst(		rst		),
+		.clk(		clk_i		),
+		.rst(		rst_i		),
 		.en(		oc2_cfg[0]	),
 		.mode(		o6_mode		),
 		.din(		wb_din		),
@@ -316,10 +320,10 @@ assign o6_full = 0;
 assign o6_empty = 0;
 `endif
 
-`ifdef SURROUND
+`ifdef AC97_SURROUND
 ac97_out_fifo	u6(
-		.clk(		clk		),
-		.rst(		rst		),
+		.clk(		clk_i		),
+		.rst(		rst_i		),
 		.en(		oc3_cfg[0]	),
 		.mode(		o7_mode		),
 		.din(		wb_din		),
@@ -332,8 +336,8 @@ ac97_out_fifo	u6(
 		);
 
 ac97_out_fifo	u7(
-		.clk(		clk		),
-		.rst(		rst		),
+		.clk(		clk_i		),
+		.rst(		rst_i		),
 		.en(		oc4_cfg[0]	),
 		.mode(		o8_mode		),
 		.din(		wb_din		),
@@ -355,10 +359,10 @@ assign o8_full = 0;
 assign o8_empty = 0;
 `endif
 
-`ifdef LFE
+`ifdef AC97_LFE
 ac97_out_fifo	u8(
-		.clk(		clk		),
-		.rst(		rst		),
+		.clk(		clk_i		),
+		.rst(		rst_i		),
 		.en(		oc5_cfg[0]	),
 		.mode(		o9_mode		),
 		.din(		wb_din		),
@@ -376,10 +380,10 @@ assign o9_full = 0;
 assign o9_empty = 0;
 `endif
 
-`ifdef SIN
+`ifdef AC97_SIN
 ac97_in_fifo	u9(
-		.clk(		clk		),
-		.rst(		rst		),
+		.clk(		clk_i		),
+		.rst(		rst_i		),
 		.en(		ic0_cfg[0]	),
 		.mode(		i3_mode		),
 		.din(		in_slt3		),
@@ -392,8 +396,8 @@ ac97_in_fifo	u9(
 		);
 
 ac97_in_fifo	u10(
-		.clk(		clk		),
-		.rst(		rst		),
+		.clk(		clk_i		),
+		.rst(		rst_i		),
 		.en(		ic1_cfg[0]	),
 		.mode(		i4_mode		),
 		.din(		in_slt4		),
@@ -415,10 +419,10 @@ assign i4_full = 0;
 assign i4_empty = 0;
 `endif
 
-`ifdef MICIN
+`ifdef AC97_MICIN
 ac97_in_fifo	u11(
-		.clk(		clk		),
-		.rst(		rst		),
+		.clk(		clk_i		),
+		.rst(		rst_i		),
 		.en(		ic2_cfg[0]	),
 		.mode(		i6_mode		),
 		.din(		in_slt6		),
@@ -437,8 +441,8 @@ assign i6_empty = 0;
 `endif
 
 ac97_wb_if	u12(
-		.clk(		clk		),
-		.rst(		rst		),
+		.clk(		clk_i		),
+		.rst(		rst_i		),
 		.wb_data_i(	wb_data_i	),
 		.wb_data_o(	wb_data_o	),
 		.wb_addr_i(	wb_addr_i	),
@@ -467,17 +471,17 @@ ac97_wb_if	u12(
 		.i6_re(		i6_re		)
 		);
 
-ac97_rf	u13(	.clk(		clk		),
-		.rst(		rst		),
+ac97_rf	u13(	.clk(		clk_i		),
+		.rst(		rst_i		),
 		.adr(		adr		),
 		.rf_dout(	rf_dout		),
 		.rf_din(	wb_din		),
 		.rf_we(		rf_we		),
 		.rf_re(		rf_re		),
-		.int(		int		),
+		.int(		int_o		),
 		.ac97_rst_force(ac97_rst_force	),
 		.resume_req(	resume_req	),
-		.suspended(	suspended	),
+		.suspended(	suspended_o	),
 		.crac_we(	crac_we		),
 		.crac_din(	crac_din	),
 		.crac_out(	crac_out	),
@@ -503,8 +507,8 @@ ac97_rf	u13(	.clk(		clk		),
 		.ic2_int_set(	ic2_int_set	)
 		);
 
-ac97_prc u14(	.clk(		clk		),
-		.rst(		rst		),
+ac97_prc u14(	.clk(		clk_i		),
+		.rst(		rst_i		),
 		.valid(		valid_s		),
 		.in_valid(	in_valid_s	),
 		.out_slt0(	out_slt0	),
@@ -541,8 +545,8 @@ ac97_prc u14(	.clk(		clk		),
 		.i6_we(		i6_we		)
 		);
 
-ac97_cra u15(	.clk(		clk		),
-		.rst(		rst		),
+ac97_cra u15(	.clk(		clk_i		),
+		.rst(		rst_i		),
 		.crac_we(	crac_we		),
 		.crac_din(	crac_din	),
 		.crac_out(	crac_out	),
@@ -556,8 +560,8 @@ ac97_cra u15(	.clk(		clk		),
 		.crac_wr(	crac_wr		)
 		);
 
-ac97_dma_if u16(.clk(		clk		),
-		.rst(		rst		),
+ac97_dma_if u16(.clk(		clk_i		),
+		.rst(		rst_i		),
 		.o3_status(	o3_status	),
 		.o4_status(	o4_status	),
 		.o6_status(	o6_status	),
@@ -585,13 +589,13 @@ ac97_dma_if u16(.clk(		clk		),
 		.ic0_cfg(	ic0_cfg		),
 		.ic1_cfg(	ic1_cfg		),
 		.ic2_cfg(	ic2_cfg		),
-		.dma_req(	dma_req		),
-		.dma_ack(	dma_ack		)
+		.dma_req(	dma_req_o	),
+		.dma_ack(	dma_ack_i	)
 		);
 
 ac97_int	u17(
-		.clk(		clk		),
-		.rst(		rst		),
+		.clk(		clk_i		),
+		.rst(		rst_i		),
 		.int_set(	oc0_int_set	),
 		.cfg(		oc0_cfg		),
 		.status(	o3_status	),
@@ -603,8 +607,8 @@ ac97_int	u17(
 		);
 
 ac97_int	u18(
-		.clk(		clk		),
-		.rst(		rst		),
+		.clk(		clk_i		),
+		.rst(		rst_i		),
 		.int_set(	oc1_int_set	),
 		.cfg(		oc1_cfg		),
 		.status(	o4_status	),
@@ -615,10 +619,10 @@ ac97_int	u18(
 		.we(		o4_we		)
 		);
 
-`ifdef CENTER
+`ifdef AC97_CENTER
 ac97_int	u19(
-		.clk(		clk		),
-		.rst(		rst		),
+		.clk(		clk_i		),
+		.rst(		rst_i		),
 		.int_set(	oc2_int_set	),
 		.cfg(		oc2_cfg		),
 		.status(	o6_status	),
@@ -632,10 +636,10 @@ ac97_int	u19(
 assign oc2_int_set = 0;
 `endif
 
-`ifdef SURROUND
+`ifdef AC97_SURROUND
 ac97_int	u20(
-		.clk(		clk		),
-		.rst(		rst		),
+		.clk(		clk_i		),
+		.rst(		rst_i		),
 		.int_set(	oc3_int_set	),
 		.cfg(		oc3_cfg		),
 		.status(	o7_status	),
@@ -647,8 +651,8 @@ ac97_int	u20(
 		);
 
 ac97_int	u21(
-		.clk(		clk		),
-		.rst(		rst		),
+		.clk(		clk_i		),
+		.rst(		rst_i		),
 		.int_set(	oc4_int_set	),
 		.cfg(		oc4_cfg		),
 		.status(	o8_status	),
@@ -663,10 +667,10 @@ assign oc3_int_set = 0;
 assign oc4_int_set = 0;
 `endif
 
-`ifdef LFE
+`ifdef AC97_LFE
 ac97_int	u22(
-		.clk(		clk		),
-		.rst(		rst		),
+		.clk(		clk_i		),
+		.rst(		rst_i		),
 		.int_set(	oc5_int_set	),
 		.cfg(		oc5_cfg		),
 		.status(	o9_status	),
@@ -680,10 +684,10 @@ ac97_int	u22(
 assign oc5_int_set = 0;
 `endif
 
-`ifdef SIN
+`ifdef AC97_SIN
 ac97_int	u23(
-		.clk(		clk		),
-		.rst(		rst		),
+		.clk(		clk_i		),
+		.rst(		rst_i		),
 		.int_set(	ic0_int_set	),
 		.cfg(		ic0_cfg		),
 		.status(	i3_status	),
@@ -695,8 +699,8 @@ ac97_int	u23(
 		);
 
 ac97_int	u24(
-		.clk(		clk		),
-		.rst(		rst		),
+		.clk(		clk_i		),
+		.rst(		rst_i		),
 		.int_set(	ic1_int_set	),
 		.cfg(		ic1_cfg		),
 		.status(	i4_status	),
@@ -711,10 +715,10 @@ assign ic0_int_set = 0;
 assign ic1_int_set = 0;
 `endif
 
-`ifdef MICIN
+`ifdef AC97_MICIN
 ac97_int	u25(
-		.clk(		clk		),
-		.rst(		rst		),
+		.clk(		clk_i		),
+		.rst(		rst_i		),
 		.int_set(	ic2_int_set	),
 		.cfg(		ic2_cfg		),
 		.status(	i6_status	),
@@ -729,11 +733,11 @@ assign ic2_int_set = 0;
 `endif
 
 ac97_rst	u26(
-		.clk(		clk				),
-		.rst(		rst 				),
+		.clk(		clk_i				),
+		.rst(		rst_i 				),
 		.rst_force(	ac97_rst_force			),
 		.ps_ce(		ps_ce				),
-		.ac97_rst_(	ac97_reset_			)
+		.ac97_rst_(	ac97_reset_pad_o_		)
 		);
 
 endmodule

@@ -37,16 +37,21 @@
 
 //  CVS Log
 //
-//  $Id: ac97_defines.v,v 1.1 2001-08-03 06:54:49 rudi Exp $
+//  $Id: ac97_defines.v,v 1.2 2001-08-10 08:09:42 rudi Exp $
 //
-//  $Date: 2001-08-03 06:54:49 $
-//  $Revision: 1.1 $
+//  $Date: 2001-08-10 08:09:42 $
+//  $Revision: 1.2 $
 //  $Author: rudi $
 //  $Locker:  $
 //  $State: Exp $
 //
 // Change History:
 //               $Log: not supported by cvs2svn $
+//               Revision 1.1  2001/08/03 06:54:49  rudi
+//
+//
+//               - Changed to new directory structure
+//
 //               Revision 1.1.1.1  2001/05/19 02:29:14  rudi
 //               Initial Checkin
 //
@@ -63,19 +68,19 @@
 // are always supported. 
 
 // Surround Left + Right
-`define SURROUND	1
+`define AC97_SURROUND	1
 
 // Center Channel
-`define CENTER		1
+`define AC97_CENTER		1
 
 // LFE Channel
-`define LFE		1
+`define AC97_LFE		1
 
 // Stereo Input
-`define SIN		1
+`define AC97_SIN		1
 
 // Mono Microphone Input
-`define MICIN		1
+`define AC97_MICIN		1
 
 /////////////////////////////////////////////////////////////////////
 //
@@ -83,7 +88,7 @@
 // the internal register file is selected.
 // This should be a simple address decoder. "wb_addr_i" is the
 // WISHBONE address bus (32 bits wide).
-`define	REG_SEL		(wb_addr_i[31:29] == 3'h0)
+`define	AC97_REG_SEL		(wb_addr_i[31:29] == 3'h0)
 
 /////////////////////////////////////////////////////////////////////
 //

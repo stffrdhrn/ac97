@@ -38,16 +38,21 @@
 
 //  CVS Log
 //
-//  $Id: ac97_rf.v,v 1.1 2001-08-03 06:54:50 rudi Exp $
+//  $Id: ac97_rf.v,v 1.2 2001-08-10 08:09:42 rudi Exp $
 //
-//  $Date: 2001-08-03 06:54:50 $
-//  $Revision: 1.1 $
+//  $Date: 2001-08-10 08:09:42 $
+//  $Revision: 1.2 $
 //  $Author: rudi $
 //  $Locker:  $
 //  $State: Exp $
 //
 // Change History:
 //               $Log: not supported by cvs2svn $
+//               Revision 1.1  2001/08/03 06:54:50  rudi
+//
+//
+//               - Changed to new directory structure
+//
 //               Revision 1.1.1.1  2001/05/19 02:29:17  rudi
 //               Initial Checkin
 //
@@ -218,13 +223,13 @@ always @(posedge clk or negedge rst)
 		if(oc1_int_set[0])	ints_r[5] <= #1 1;
 		if(oc1_int_set[1])	ints_r[6] <= #1 1;
 		if(oc1_int_set[2])	ints_r[7] <= #1 1;
-`ifdef CENTER
+`ifdef AC97_CENTER
 		if(oc2_int_set[0])	ints_r[8] <= #1 1;
 		if(oc2_int_set[1])	ints_r[9] <= #1 1;
 		if(oc2_int_set[2])	ints_r[10] <= #1 1;
 `endif
 
-`ifdef SURROUND
+`ifdef AC97_SURROUND
 		if(oc3_int_set[0])	ints_r[11] <= #1 1;
 		if(oc3_int_set[1])	ints_r[12] <= #1 1;
 		if(oc3_int_set[2])	ints_r[13] <= #1 1;
@@ -233,13 +238,13 @@ always @(posedge clk or negedge rst)
 		if(oc4_int_set[2])	ints_r[16] <= #1 1;
 `endif
 
-`ifdef LFE
+`ifdef AC97_LFE
 		if(oc5_int_set[0])	ints_r[17] <= #1 1;
 		if(oc5_int_set[1])	ints_r[18] <= #1 1;
 		if(oc5_int_set[2])	ints_r[19] <= #1 1;
 `endif
 
-`ifdef SIN
+`ifdef AC97_SIN
 		if(ic0_int_set[0])	ints_r[20] <= #1 1;
 		if(ic0_int_set[1])	ints_r[21] <= #1 1;
 		if(ic0_int_set[2])	ints_r[22] <= #1 1;
@@ -248,7 +253,7 @@ always @(posedge clk or negedge rst)
 		if(ic1_int_set[2])	ints_r[25] <= #1 1;
 `endif
 
-`ifdef MICIN
+`ifdef AC97_MICIN
 		if(ic2_int_set[0])	ints_r[26] <= #1 1;
 		if(ic2_int_set[1])	ints_r[27] <= #1 1;
 		if(ic2_int_set[2])	ints_r[28] <= #1 1;
