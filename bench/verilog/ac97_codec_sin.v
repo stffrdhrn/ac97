@@ -12,8 +12,9 @@
 ////                                                             ////
 /////////////////////////////////////////////////////////////////////
 ////                                                             ////
-//// Copyright (C) 2000 Rudolf Usselmann                         ////
-////                    rudi@asics.ws                            ////
+//// Copyright (C) 2000-2002 Rudolf Usselmann                    ////
+////                         www.asics.ws                        ////
+////                         rudi@asics.ws                       ////
 ////                                                             ////
 //// This source file may be used and distributed without        ////
 //// restriction provided that this copyright statement is not   ////
@@ -38,16 +39,20 @@
 
 //  CVS Log
 //
-//  $Id: ac97_codec_sin.v,v 1.1 2002-02-13 08:22:32 rudi Exp $
+//  $Id: ac97_codec_sin.v,v 1.2 2002-09-19 06:36:19 rudi Exp $
 //
-//  $Date: 2002-02-13 08:22:32 $
-//  $Revision: 1.1 $
+//  $Date: 2002-09-19 06:36:19 $
+//  $Revision: 1.2 $
 //  $Author: rudi $
 //  $Locker:  $
 //  $State: Exp $
 //
 // Change History:
 //               $Log: not supported by cvs2svn $
+//               Revision 1.1  2002/02/13 08:22:32  rudi
+//
+//               Added test bench for public release
+//
 //
 //
 //

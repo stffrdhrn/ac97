@@ -11,8 +11,9 @@
 ////                                                             ////
 /////////////////////////////////////////////////////////////////////
 ////                                                             ////
-//// Copyright (C) 2000 Rudolf Usselmann                         ////
-////                    rudi@asics.ws                            ////
+//// Copyright (C) 2000-2002 Rudolf Usselmann                    ////
+////                         www.asics.ws                        ////
+////                         rudi@asics.ws                       ////
 ////                                                             ////
 //// This source file may be used and distributed without        ////
 //// restriction provided that this copyright statement is not   ////
@@ -37,16 +38,20 @@
 
 //  CVS Log
 //
-//  $Id: test_bench_top.v,v 1.3 2002-03-11 03:21:12 rudi Exp $
+//  $Id: test_bench_top.v,v 1.4 2002-09-19 06:36:19 rudi Exp $
 //
-//  $Date: 2002-03-11 03:21:12 $
-//  $Revision: 1.3 $
+//  $Date: 2002-09-19 06:36:19 $
+//  $Revision: 1.4 $
 //  $Author: rudi $
 //  $Locker:  $
 //  $State: Exp $
 //
 // Change History:
 //               $Log: not supported by cvs2svn $
+//               Revision 1.3  2002/03/11 03:21:12  rudi
+//
+//               - Added defines to select fifo depth between 4, 8 and 16 entries.
+//
 //               Revision 1.2  2002/03/05 04:44:04  rudi
 //
 //               - Fixed the order of the thrash hold bits to match the spec.
