@@ -10,6 +10,10 @@ please send an email to the list or to me directly.
 STATUS
 ======
 
+Update (8/2/2001)
+-----------------
+- Changed Directory structure
+
 Initial Release (19/5/2001)
 ---------------------------
 - This is the very first release of the core
