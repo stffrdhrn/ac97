@@ -39,16 +39,20 @@
 
 //  CVS Log
 //
-//  $Id: ac97_in_fifo.v,v 1.4 2002-09-19 06:30:56 rudi Exp $
+//  $Id: ac97_in_fifo.v,v 1.5 2002-11-14 17:10:12 rudi Exp $
 //
-//  $Date: 2002-09-19 06:30:56 $
-//  $Revision: 1.4 $
+//  $Date: 2002-11-14 17:10:12 $
+//  $Revision: 1.5 $
 //  $Author: rudi $
 //  $Locker:  $
 //  $State: Exp $
 //
 // Change History:
 //               $Log: not supported by cvs2svn $
+//               Revision 1.4  2002/09/19 06:30:56  rudi
+//               Fixed a bug reported by Igor. Apparently this bug only shows up when
+//               the WB clock is very low (2x bit_clk). Updated Copyright header.
+//
 //               Revision 1.3  2002/03/11 03:21:22  rudi
 //
 //               - Added defines to select fifo depth between 4, 8 and 16 entries.
@@ -148,7 +152,7 @@ always @(posedge clk)
 always @(mode or din_tmp1 or din)
 	case(mode)	// synopsys parallel_case full_case
 	   2'h0: din_tmp = {din[19:4], din_tmp1};	// 16 Bit Output
-	   2'h1: din_tmp = {13'h0, din[17:0]};		// 18 bit Output
+	   2'h1: din_tmp = {14'h0, din[19:2]};		// 18 bit Output
 	   2'h2: din_tmp = {11'h0, din[19:0]};		// 20 Bit Output
 	endcase
 
@@ -235,7 +239,7 @@ always @(posedge clk)
 always @(mode or din_tmp1 or din)
 	case(mode)	// synopsys parallel_case full_case
 	   2'h0: din_tmp = {din[19:4], din_tmp1};	// 16 Bit Output
-	   2'h1: din_tmp = {13'h0, din[17:0]};		// 18 bit Output
+	   2'h1: din_tmp = {14'h0, din[19:2]};		// 18 bit Output
 	   2'h2: din_tmp = {11'h0, din[19:0]};		// 20 Bit Output
 	endcase
 
@@ -323,7 +327,7 @@ always @(posedge clk)
 always @(mode or din_tmp1 or din)
 	case(mode)	// synopsys parallel_case full_case
 	   2'h0: din_tmp = {din[19:4], din_tmp1};	// 16 Bit Output
-	   2'h1: din_tmp = {13'h0, din[17:0]};		// 18 bit Output
+	   2'h1: din_tmp = {14'h0, din[19:2]};		// 18 bit Output
 	   2'h2: din_tmp = {11'h0, din[19:0]};		// 20 Bit Output
 	endcase
 
