@@ -37,16 +37,21 @@
 
 //  CVS Log
 //
-//  $Id: test_bench_top.v,v 1.2 2002-03-05 04:44:04 rudi Exp $
+//  $Id: test_bench_top.v,v 1.3 2002-03-11 03:21:12 rudi Exp $
 //
-//  $Date: 2002-03-05 04:44:04 $
-//  $Revision: 1.2 $
+//  $Date: 2002-03-11 03:21:12 $
+//  $Revision: 1.3 $
 //  $Author: rudi $
 //  $Locker:  $
 //  $State: Exp $
 //
 // Change History:
 //               $Log: not supported by cvs2svn $
+//               Revision 1.2  2002/03/05 04:44:04  rudi
+//
+//               - Fixed the order of the thrash hold bits to match the spec.
+//               - Many minor synthesis cleanup items ...
+//
 //               Revision 1.1  2002/02/13 08:22:32  rudi
 //
 //               Added test bench for public release
@@ -139,7 +144,7 @@ reg	[31:0]	data;
 reg	[31:0]	data1;
 reg	[31:0]	data2;
 reg	[31:0]	tmp;
-integer		size, frames, m;
+integer		size, frames, m, p;
 
 /////////////////////////////////////////////////////////////////////
 //
@@ -247,6 +252,50 @@ initial
 	ic0_ptr = 0;
 	ic1_ptr = 0;
 	ic2_ptr = 0;
+
+
+	oc0_th = 4;
+	oc1_th = 4;
+	oc2_th = 4;
+	oc3_th = 4;
+	oc4_th = 4;
+	oc5_th = 4;
+	ic0_th = 4;
+	ic1_th = 4;
+	ic2_th = 4;
+
+
+`ifdef AC97_OUT_FIFO_DEPTH_8
+	oc0_th = oc0_th * 2;
+	oc1_th = oc1_th * 2;
+	oc2_th = oc2_th * 2;
+	oc3_th = oc3_th * 2;
+	oc4_th = oc4_th * 2;
+	oc5_th = oc5_th * 2;
+`endif
+
+`ifdef AC97_OUT_FIFO_DEPTH_16
+	oc0_th = oc0_th * 4;
+	oc1_th = oc1_th * 4;
+	oc2_th = oc2_th * 4;
+	oc3_th = oc3_th * 4;
+	oc4_th = oc4_th * 4;
+	oc5_th = oc5_th * 4;
+`endif
+
+`ifdef AC97_IN_FIFO_DEPTH_8
+	ic0_th = ic0_th * 2;
+	ic1_th = ic1_th * 2;
+	ic2_th = ic2_th * 2;
+`endif
+
+`ifdef AC97_IN_FIFO_DEPTH_16
+	ic0_th = ic0_th * 4;
+	ic1_th = ic1_th * 4;
+	ic2_th = ic2_th * 4;
+`endif
+
+
 
    	repeat(48)	@(posedge clk);
    	rst = 1;
@@ -758,11 +807,11 @@ if(oc0_dma_en & dma_req[0])
    begin
 	while(wb_busy)	@(posedge clk);
 	wb_busy = 1;
-	m0.wb_wr4(`OC0,	4'hf, 0,	oc0_mem[oc0_ptr+0],
-					oc0_mem[oc0_ptr+1],
-					oc0_mem[oc0_ptr+2],
-					oc0_mem[oc0_ptr+3]);
-	oc0_ptr = oc0_ptr + 4;
+
+	for(p=0;p<oc0_th;p=p+1)
+		m0.wb_wr1(`OC0,4'hf, oc0_mem[oc0_ptr+p]	);
+	oc0_ptr = oc0_ptr + oc0_th;
+
 	wb_busy = 0;
 	dma_ack[0] = 1;
 	@(posedge clk);
@@ -775,11 +824,9 @@ if(oc1_dma_en & dma_req[1])
    begin
 	while(wb_busy)	@(posedge clk);
 	wb_busy = 1;
-	m0.wb_wr4(`OC1,	4'hf, 0,	oc1_mem[oc1_ptr+0],
-					oc1_mem[oc1_ptr+1],
-					oc1_mem[oc1_ptr+2],
-					oc1_mem[oc1_ptr+3]);
-	oc1_ptr = oc1_ptr + 4;
+	for(p=0;p<oc1_th;p=p+1)
+		m0.wb_wr1(`OC1,4'hf, oc1_mem[oc1_ptr+p]	);
+	oc1_ptr = oc1_ptr + oc1_th;
 	wb_busy = 0;
 	dma_ack[1] = 1;
 	@(posedge clk);
@@ -791,11 +838,9 @@ if(oc2_dma_en & dma_req[2])
    begin
 	while(wb_busy)	@(posedge clk);
 	wb_busy = 1;
-	m0.wb_wr4(`OC2,	4'hf, 0,	oc2_mem[oc2_ptr+0],
-					oc2_mem[oc2_ptr+1],
-					oc2_mem[oc2_ptr+2],
-					oc2_mem[oc2_ptr+3]);
-	oc2_ptr = oc2_ptr + 4;
+	for(p=0;p<oc2_th;p=p+1)
+		m0.wb_wr1(`OC2,4'hf, oc2_mem[oc2_ptr+p]	);
+	oc2_ptr = oc2_ptr + oc2_th;
 	wb_busy = 0;
 	dma_ack[2] = 1;
 	@(posedge clk);
@@ -807,11 +852,9 @@ if(oc3_dma_en & dma_req[3])
    begin
 	while(wb_busy)	@(posedge clk);
 	wb_busy = 1;
-	m0.wb_wr4(`OC3,	4'hf, 0,	oc3_mem[oc3_ptr+0],
-					oc3_mem[oc3_ptr+1],
-					oc3_mem[oc3_ptr+2],
-					oc3_mem[oc3_ptr+3]);
-	oc3_ptr = oc3_ptr + 4;
+	for(p=0;p<oc3_th;p=p+1)
+		m0.wb_wr1(`OC3,4'hf, oc3_mem[oc3_ptr+p]	);
+	oc3_ptr = oc3_ptr + oc3_th;
 	wb_busy = 0;
 	dma_ack[3] = 1;
 	@(posedge clk);
@@ -823,11 +866,9 @@ if(oc4_dma_en & dma_req[4])
    begin
 	while(wb_busy)	@(posedge clk);
 	wb_busy = 1;
-	m0.wb_wr4(`OC4,	4'hf, 0,	oc4_mem[oc4_ptr+0],
-					oc4_mem[oc4_ptr+1],
-					oc4_mem[oc4_ptr+2],
-					oc4_mem[oc4_ptr+3]);
-	oc4_ptr = oc4_ptr + 4;
+	for(p=0;p<oc4_th;p=p+1)
+		m0.wb_wr1(`OC4,4'hf, oc4_mem[oc4_ptr+p]	);
+	oc4_ptr = oc4_ptr + oc4_th;
 	wb_busy = 0;
 	dma_ack[4] = 1;
 	@(posedge clk);
@@ -839,11 +880,9 @@ if(oc5_dma_en & dma_req[5])
    begin
 	while(wb_busy)	@(posedge clk);
 	wb_busy = 1;
-	m0.wb_wr4(`OC5,	4'hf, 0,	oc5_mem[oc5_ptr+0],
-					oc5_mem[oc5_ptr+1],
-					oc5_mem[oc5_ptr+2],
-					oc5_mem[oc5_ptr+3]);
-	oc5_ptr = oc5_ptr + 4;
+	for(p=0;p<oc5_th;p=p+1)
+		m0.wb_wr1(`OC5,4'hf, oc5_mem[oc5_ptr+p]	);
+	oc5_ptr = oc5_ptr + oc5_th;
 	wb_busy = 0;
 	dma_ack[5] = 1;
 	@(posedge clk);
@@ -855,11 +894,9 @@ if(ic0_dma_en & dma_req[6])
    begin
 	while(wb_busy)	@(posedge clk);
 	wb_busy = 1;
-	m0.wb_rd4(`IC0,	4'hf, 0,	ic0_mem[ic0_ptr+0],
-					ic0_mem[ic0_ptr+1],
-					ic0_mem[ic0_ptr+2],
-					ic0_mem[ic0_ptr+3]);
-	ic0_ptr = ic0_ptr + 4;
+	for(p=0;p<ic0_th;p=p+1)
+		m0.wb_rd1(`IC0,4'hf, ic0_mem[ic0_ptr+p]	);
+	ic0_ptr = ic0_ptr + ic0_th;
 	wb_busy = 0;
 	dma_ack[6] = 1;
 	@(posedge clk);
@@ -871,11 +908,9 @@ if(ic1_dma_en & dma_req[7])
    begin
 	while(wb_busy)	@(posedge clk);
 	wb_busy = 1;
-	m0.wb_rd4(`IC1,	4'hf, 0,	ic1_mem[ic1_ptr+0],
-					ic1_mem[ic1_ptr+1],
-					ic1_mem[ic1_ptr+2],
-					ic1_mem[ic1_ptr+3]);
-	ic1_ptr = ic1_ptr + 4;
+	for(p=0;p<ic1_th;p=p+1)
+		m0.wb_rd1(`IC1,4'hf, ic1_mem[ic1_ptr+p]	);
+	ic1_ptr = ic1_ptr + ic1_th;
 	wb_busy = 0;
 	dma_ack[7] = 1;
 	@(posedge clk);
@@ -887,11 +922,9 @@ if(ic2_dma_en & dma_req[8])
    begin
 	while(wb_busy)	@(posedge clk);
 	wb_busy = 1;
-	m0.wb_rd4(`IC2,	4'hf, 0,	ic2_mem[ic2_ptr+0],
-					ic2_mem[ic2_ptr+1],
-					ic2_mem[ic2_ptr+2],
-					ic2_mem[ic2_ptr+3]);
-	ic2_ptr = ic2_ptr + 4;
+	for(p=0;p<ic2_th;p=p+1)
+		m0.wb_rd1(`IC2,4'hf, ic2_mem[ic2_ptr+p]	);
+	ic2_ptr = ic2_ptr + ic2_th;
 	wb_busy = 0;
 	dma_ack[8] = 1;
 	@(posedge clk);

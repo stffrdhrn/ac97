@@ -37,16 +37,21 @@
 
 //  CVS Log
 //
-//  $Id: ac97_defines.v,v 1.3 2002-03-05 04:44:05 rudi Exp $
+//  $Id: ac97_defines.v,v 1.4 2002-03-11 03:21:22 rudi Exp $
 //
-//  $Date: 2002-03-05 04:44:05 $
-//  $Revision: 1.3 $
+//  $Date: 2002-03-11 03:21:22 $
+//  $Revision: 1.4 $
 //  $Author: rudi $
 //  $Locker:  $
 //  $State: Exp $
 //
 // Change History:
 //               $Log: not supported by cvs2svn $
+//               Revision 1.3  2002/03/05 04:44:05  rudi
+//
+//               - Fixed the order of the thrash hold bits to match the spec.
+//               - Many minor synthesis cleanup items ...
+//
 //               Revision 1.2  2001/08/10 08:09:42  rudi
 //
 //               - Removed RTY_O output.
@@ -133,4 +138,27 @@
 // any change on the bit clock input before we signal "suspended".
 // For a 200 MHz WISHBONE clock this would be about (163/5) 33 cycles.
 `define AC97_SUSP_DET	6'h21
+
+/////////////////////////////////////////////////////////////////////
+//
+// Select FIFO Depth. For most applications a FIFO depth of 4 should
+// be sufficient. For systems with slow interrupt processing or slow
+// DMA response or systems with low internal bus bandwidth you might
+// want to increase the FIFO sizes to reduce the interrupt/DMA service
+// request frequencies.
+// Service request frequency can be calculated as follows:
+// Channel bandwidth / FIFO size = Service Request Frequency
+// For Example: 48KHz / 4 = 12 kHz
+//
+// Select Input FIFO depth by uncommenting ONE of the following define
+// statements:
+`define AC97_IN_FIFO_DEPTH_4
+//`define AC97_IN_FIFO_DEPTH_8
+//`define AC97_IN_FIFO_DEPTH_16
+//
+// Select Output FIFO depth by uncommenting ONE of the following define
+// statements:
+`define AC97_OUT_FIFO_DEPTH_4
+//`define AC97_OUT_FIFO_DEPTH_8
+//`define AC97_OUT_FIFO_DEPTH_16
 

@@ -37,16 +37,20 @@
 
 //  CVS Log
 //
-//  $Id: tests.v,v 1.3 2002-03-05 04:54:08 rudi Exp $
+//  $Id: tests.v,v 1.4 2002-03-11 03:21:12 rudi Exp $
 //
-//  $Date: 2002-03-05 04:54:08 $
-//  $Revision: 1.3 $
+//  $Date: 2002-03-11 03:21:12 $
+//  $Revision: 1.4 $
 //  $Author: rudi $
 //  $Locker:  $
 //  $State: Exp $
 //
 // Change History:
 //               $Log: not supported by cvs2svn $
+//               Revision 1.3  2002/03/05 04:54:08  rudi
+//
+//               - fixed spelling
+//
 //               Revision 1.2  2002/03/05 04:44:04  rudi
 //
 //               - Fixed the order of the thrash hold bits to match the spec.
@@ -174,7 +178,7 @@ repeat(300)	@(posedge bit_clk);
 
 	   end
 
-	size = frames - 4;
+	size = frames - 12;
 
 	for(n=0;n<size;n=n+1)
 	   begin
@@ -986,8 +990,40 @@ for(th=0;th<4;th=th+1)
 	m0.wb_wr1(`OCC1,4'hf, 32'h0000_0303);
 	m0.wb_wr1(`ICC,4'hf, 32'h0003_0303);
 	end
-
 	endcase
+
+
+`ifdef AC97_OUT_FIFO_DEPTH_8
+	oc0_th = oc0_th * 2;
+	oc1_th = oc1_th * 2;
+	oc2_th = oc2_th * 2;
+	oc3_th = oc3_th * 2;
+	oc4_th = oc4_th * 2;
+	oc5_th = oc5_th * 2;
+`endif
+
+`ifdef AC97_OUT_FIFO_DEPTH_16
+	oc0_th = oc0_th * 4;
+	oc1_th = oc1_th * 4;
+	oc2_th = oc2_th * 4;
+	oc3_th = oc3_th * 4;
+	oc4_th = oc4_th * 4;
+	oc5_th = oc5_th * 4;
+`endif
+
+
+
+`ifdef AC97_IN_FIFO_DEPTH_8
+	ic0_th = ic0_th * 2;
+	ic1_th = ic1_th * 2;
+	ic2_th = ic2_th * 2;
+`endif
+
+`ifdef AC97_IN_FIFO_DEPTH_16
+	ic0_th = ic0_th * 4;
+	ic1_th = ic1_th * 4;
+	ic2_th = ic2_th * 4;
+`endif
 
 	wb_busy = 0;
 
