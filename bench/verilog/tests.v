@@ -37,16 +37,21 @@
 
 //  CVS Log
 //
-//  $Id: tests.v,v 1.2 2002-03-05 04:44:04 rudi Exp $
+//  $Id: tests.v,v 1.3 2002-03-05 04:54:08 rudi Exp $
 //
-//  $Date: 2002-03-05 04:44:04 $
-//  $Revision: 1.2 $
+//  $Date: 2002-03-05 04:54:08 $
+//  $Revision: 1.3 $
 //  $Author: rudi $
 //  $Locker:  $
 //  $State: Exp $
 //
 // Change History:
 //               $Log: not supported by cvs2svn $
+//               Revision 1.2  2002/03/05 04:44:04  rudi
+//
+//               - Fixed the order of the thrash hold bits to match the spec.
+//               - Many minor synthesis cleanup items ...
+//
 //               Revision 1.1  2002/02/13 08:22:32  rudi
 //
 //               Added test bench for public release
@@ -912,8 +917,7 @@ for(th=0;th<4;th=th+1)
 	case(th)
 	0:
 	begin
-	$display("Interrupt thrash hold: 100%");
-	// Thrash holds
+	$display("Interrupt threshold: 100%");
 	oc0_th = 4;	// 100% (4/4) Full Empty
 	oc1_th = 4;
 	oc2_th = 4;
@@ -931,8 +935,7 @@ for(th=0;th<4;th=th+1)
 
 	1:
 	begin
-	$display("Interrupt thrash hold: 75%");
-	// Thrash holds
+	$display("Interrupt threshold: 75%");
 	oc0_th = 3;	// 75% (3/4) Full Empty
 	oc1_th = 3;
 	oc2_th = 3;
@@ -950,8 +953,7 @@ for(th=0;th<4;th=th+1)
 
 	2:
 	begin
-	$display("Interrupt thrash hold: 50%");
-	// Thrash holds
+	$display("Interrupt threshold: 50%");
 	oc0_th = 2;	// 50% (1/2) Full/Empty
 	oc1_th = 2;
 	oc2_th = 2;
@@ -969,8 +971,7 @@ for(th=0;th<4;th=th+1)
 
 	3:
 	begin
-	$display("Interrupt thrash hold: 25%");
-	// Thrash holds
+	$display("Interrupt threshold: 25%");
 	oc0_th = 1;	// 25% (1/4) Full/Empty
 	oc1_th = 1;
 	oc2_th = 1;
