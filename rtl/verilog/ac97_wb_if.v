@@ -38,16 +38,23 @@
 
 //  CVS Log
 //
-//  $Id: ac97_wb_if.v,v 1.2 2001-08-10 08:09:42 rudi Exp $
+//  $Id: ac97_wb_if.v,v 1.3 2002-03-05 04:44:05 rudi Exp $
 //
-//  $Date: 2001-08-10 08:09:42 $
-//  $Revision: 1.2 $
+//  $Date: 2002-03-05 04:44:05 $
+//  $Revision: 1.3 $
 //  $Author: rudi $
 //  $Locker:  $
 //  $State: Exp $
 //
 // Change History:
 //               $Log: not supported by cvs2svn $
+//               Revision 1.2  2001/08/10 08:09:42  rudi
+//
+//               - Removed RTY_O output.
+//               - Added Clock and Reset Inputs to documentation.
+//               - Changed IO names to be more clear.
+//               - Uniquifyed define names to be core specific.
+//
 //               Revision 1.1  2001/08/03 06:54:50  rudi
 //
 //
@@ -120,16 +127,16 @@ wire		re;
 
 assign adr = wb_addr_i[5:2];
 
-assign wb_err_o = 0;
+assign wb_err_o = 1'b0;
 
 always @(posedge clk)
 	dout <= #1 wb_data_i;
 
 always @(posedge clk)
 	case(wb_addr_i[6:2])	// synopsys parallel_case full_case
-	   14: wb_data_o <= #1 i3_din;
-	   15: wb_data_o <= #1 i4_din;
-	   16: wb_data_o <= #1 i6_din;
+	   5'he: wb_data_o <= #1 i3_din;
+	   5'hf: wb_data_o <= #1 i4_din;
+	   5'h10: wb_data_o <= #1 i6_din;
 	   default: wb_data_o <= #1 rf_din;
 	endcase
 
@@ -141,7 +148,7 @@ always @(posedge clk)
 
 assign re = re1 & !re2 & wb_cyc_i & wb_stb_i & !wb_we_i;
 
-assign rf_re = re & (wb_addr_i[6:2] < 8);
+assign rf_re = re & (wb_addr_i[6:2] < 5'h8);
 
 always @(posedge clk)
 	we1 <= #1 !we & wb_cyc_i & wb_stb_i & wb_we_i & `AC97_REG_SEL;
@@ -155,33 +162,33 @@ always @(posedge clk)
 	wb_ack_o <= #1 (re | we) & wb_cyc_i & wb_stb_i & ~wb_ack_o;
 
 always @(posedge clk)
-	rf_we <= #1 we & (wb_addr_i[6:2] < 8);
+	rf_we <= #1 we & (wb_addr_i[6:2] < 5'h8);
 
 always @(posedge clk)
-	o3_we <= #1 we & (wb_addr_i[6:2] == 8);
+	o3_we <= #1 we & (wb_addr_i[6:2] == 5'h8);
 
 always @(posedge clk)
-	o4_we <= #1 we & (wb_addr_i[6:2] == 9);
+	o4_we <= #1 we & (wb_addr_i[6:2] == 5'h9);
 
 always @(posedge clk)
-	o6_we <= #1 we & (wb_addr_i[6:2] == 10);
+	o6_we <= #1 we & (wb_addr_i[6:2] == 5'ha);
 
 always @(posedge clk)
-	o7_we <= #1 we & (wb_addr_i[6:2] == 11);
+	o7_we <= #1 we & (wb_addr_i[6:2] == 5'hb);
 
 always @(posedge clk)
-	o8_we <= #1 we & (wb_addr_i[6:2] == 12);
+	o8_we <= #1 we & (wb_addr_i[6:2] == 5'hc);
 
 always @(posedge clk)
-	o9_we <= #1 we & (wb_addr_i[6:2] == 13);
+	o9_we <= #1 we & (wb_addr_i[6:2] == 5'hd);
 
 always @(posedge clk)
-	i3_re <= #1 re & (wb_addr_i[6:2] == 14);
+	i3_re <= #1 re & (wb_addr_i[6:2] == 5'he);
 
 always @(posedge clk)
-	i4_re <= #1 re & (wb_addr_i[6:2] == 15);
+	i4_re <= #1 re & (wb_addr_i[6:2] == 5'hf);
 
 always @(posedge clk)
-	i6_re <= #1 re & (wb_addr_i[6:2] == 16);
+	i6_re <= #1 re & (wb_addr_i[6:2] == 5'h10);
 
 endmodule

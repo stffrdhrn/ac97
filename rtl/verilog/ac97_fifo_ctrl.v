@@ -38,16 +38,21 @@
 
 //  CVS Log
 //
-//  $Id: ac97_fifo_ctrl.v,v 1.1 2001-08-03 06:54:49 rudi Exp $
+//  $Id: ac97_fifo_ctrl.v,v 1.2 2002-03-05 04:44:05 rudi Exp $
 //
-//  $Date: 2001-08-03 06:54:49 $
-//  $Revision: 1.1 $
+//  $Date: 2002-03-05 04:44:05 $
+//  $Revision: 1.2 $
 //  $Author: rudi $
 //  $Locker:  $
 //  $State: Exp $
 //
 // Change History:
 //               $Log: not supported by cvs2svn $
+//               Revision 1.1  2001/08/03 06:54:49  rudi
+//
+//
+//               - Changed to new directory structure
+//
 //               Revision 1.1.1.1  2001/05/19 02:29:18  rudi
 //               Initial Checkin
 //
@@ -89,10 +94,10 @@ always @(posedge clk)
 
 always @(posedge clk)
 	if(valid & ch_en & !full_empty_r & crdy & (!srs | (srs & req) ) )
-		en_out_l <= #1 1;
+		en_out_l <= #1 1'b1;
 	else
 	if(!valid & !(ch_en & !full_empty_r & crdy & (!srs | (srs & req) )) )
-		en_out_l <= #1 0;
+		en_out_l <= #1 1'b0;
 
 always @(posedge clk)
 	en_out_l2 <= #1 en_out_l & valid;

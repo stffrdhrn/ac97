@@ -38,16 +38,21 @@
 
 //  CVS Log
 //
-//  $Id: ac97_int.v,v 1.1 2001-08-03 06:54:50 rudi Exp $
+//  $Id: ac97_int.v,v 1.2 2002-03-05 04:44:05 rudi Exp $
 //
-//  $Date: 2001-08-03 06:54:50 $
-//  $Revision: 1.1 $
+//  $Date: 2002-03-05 04:44:05 $
+//  $Revision: 1.2 $
 //  $Author: rudi $
 //  $Locker:  $
 //  $State: Exp $
 //
 // Change History:
 //               $Log: not supported by cvs2svn $
+//               Revision 1.1  2001/08/03 06:54:50  rudi
+//
+//
+//               - Changed to new directory structure
+//
 //               Revision 1.1.1.1  2001/05/19 02:29:18  rudi
 //               Initial Checkin
 //
@@ -86,26 +91,26 @@ reg	[2:0]	int_set;
 //
 
 always @(posedge clk or negedge rst)
-	if(!rst)	int_set[0] <= #1 0;
+	if(!rst)	int_set[0] <= #1 1'b0;
 	else
 	case(cfg[5:4])	// synopsys parallel_case full_case
 			// 1/4 full/empty
-	   0: int_set[0] <= #1 cfg[0] & (full_empty | (status == 2'd0));
+	   2'h2: int_set[0] <= #1 cfg[0] & (full_empty | (status == 2'h0));
 			// 1/2 full/empty
-	   1: int_set[0] <= #1 cfg[0] & (full_empty | (status[1] == 1'd0));
+	   2'h1: int_set[0] <= #1 cfg[0] & (full_empty | (status[1] == 1'h0));
 			// 3/4 full/empty
-	   2: int_set[0] <= #1 cfg[0] & (full_empty | (status < 2'd3));	
-	   3: int_set[0] <= #1 cfg[0] & full_empty;
+	   2'h0: int_set[0] <= #1 cfg[0] & (full_empty | (status < 2'h3));	
+	   2'h3: int_set[0] <= #1 cfg[0] & full_empty;
 	endcase
 
 always @(posedge clk or negedge rst)
-	if(!rst)	int_set[1] <= #1 0;
+	if(!rst)	int_set[1] <= #1 1'b0;
 	else
-	if(empty & re)	int_set[1] <= #1 1;
+	if(empty & re)	int_set[1] <= #1 1'b1;
 
 always @(posedge clk or negedge rst)
-	if(!rst)	int_set[2] <= #1 0;
+	if(!rst)	int_set[2] <= #1 1'b0;
 	else
-	if(full & we)	int_set[2] <= #1 1;
+	if(full & we)	int_set[2] <= #1 1'b1;
 
 endmodule

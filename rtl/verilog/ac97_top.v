@@ -37,16 +37,23 @@
 
 //  CVS Log
 //
-//  $Id: ac97_top.v,v 1.2 2001-08-10 08:09:42 rudi Exp $
+//  $Id: ac97_top.v,v 1.3 2002-03-05 04:44:05 rudi Exp $
 //
-//  $Date: 2001-08-10 08:09:42 $
-//  $Revision: 1.2 $
+//  $Date: 2002-03-05 04:44:05 $
+//  $Revision: 1.3 $
 //  $Author: rudi $
 //  $Locker:  $
 //  $State: Exp $
 //
 // Change History:
 //               $Log: not supported by cvs2svn $
+//               Revision 1.2  2001/08/10 08:09:42  rudi
+//
+//               - Removed RTY_O output.
+//               - Added Clock and Reset Inputs to documentation.
+//               - Changed IO names to be more clear.
+//               - Uniquifyed define names to be core specific.
+//
 //               Revision 1.1  2001/08/03 06:54:50  rudi
 //
 //
@@ -314,10 +321,10 @@ ac97_out_fifo	u5(
 		.empty(		o6_empty	)
 		);
 `else
-assign out_slt6 = 0;
-assign o6_status = 0;
-assign o6_full = 0;
-assign o6_empty = 0;
+assign out_slt6 = 20'h0;
+assign o6_status = 2'h0;
+assign o6_full = 1'b0;
+assign o6_empty = 1'b0;
 `endif
 
 `ifdef AC97_SURROUND
@@ -349,14 +356,14 @@ ac97_out_fifo	u7(
 		.empty(		o8_empty	)
 		);
 `else
-assign out_slt7 = 0;
-assign o7_status = 0;
-assign o7_full = 0;
-assign o7_empty = 0;
-assign out_slt8 = 0;
-assign o8_status = 0;
-assign o8_full = 0;
-assign o8_empty = 0;
+assign out_slt7 = 20'h0;
+assign o7_status = 2'h0;
+assign o7_full = 1'b0;
+assign o7_empty = 1'b0;
+assign out_slt8 = 20'h0;
+assign o8_status = 2'h0;
+assign o8_full = 1'b0;
+assign o8_empty = 1'b0;
 `endif
 
 `ifdef AC97_LFE
@@ -374,10 +381,10 @@ ac97_out_fifo	u8(
 		.empty(		o9_empty	)
 		);
 `else
-assign out_slt9 = 0;
-assign o9_status = 0;
-assign o9_full = 0;
-assign o9_empty = 0;
+assign out_slt9 = 20'h0;
+assign o9_status = 2'h0;
+assign o9_full = 1'b0;
+assign o9_empty = 1'b0;
 `endif
 
 `ifdef AC97_SIN
@@ -409,14 +416,14 @@ ac97_in_fifo	u10(
 		.empty(		i4_empty	)
 		);
 `else
-assign i3_dout = 0;
-assign i3_status = 0;
-assign i3_full = 0;
-assign i3_empty = 0;
-assign i4_dout = 0;
-assign i4_status = 0;
-assign i4_full = 0;
-assign i4_empty = 0;
+assign i3_dout = 20'h0;
+assign i3_status = 2'h0;
+assign i3_full = 1'b0;
+assign i3_empty = 1'b0;
+assign i4_dout = 20'h0;
+assign i4_status = 2'h0;
+assign i4_full = 1'b0;
+assign i4_empty = 1'b0;
 `endif
 
 `ifdef AC97_MICIN
@@ -434,10 +441,10 @@ ac97_in_fifo	u11(
 		.empty(		i6_empty	)
 		);
 `else
-assign i6_dout = 0;
-assign i6_status = 0;
-assign i6_full = 0;
-assign i6_empty = 0;
+assign i6_dout = 20'h0;
+assign i6_status = 2'h0;
+assign i6_full = 1'b0;
+assign i6_empty = 1'b0;
 `endif
 
 ac97_wb_if	u12(
@@ -633,7 +640,7 @@ ac97_int	u19(
 		.we(		o6_we		)
 		);
 `else
-assign oc2_int_set = 0;
+assign oc2_int_set = 1'b0;
 `endif
 
 `ifdef AC97_SURROUND
@@ -663,8 +670,8 @@ ac97_int	u21(
 		.we(		o8_we		)
 		);
 `else
-assign oc3_int_set = 0;
-assign oc4_int_set = 0;
+assign oc3_int_set = 1'b0;
+assign oc4_int_set = 1'b0;
 `endif
 
 `ifdef AC97_LFE
@@ -681,7 +688,7 @@ ac97_int	u22(
 		.we(		o9_we		)
 		);
 `else
-assign oc5_int_set = 0;
+assign oc5_int_set = 1'b0;
 `endif
 
 `ifdef AC97_SIN
@@ -711,8 +718,8 @@ ac97_int	u24(
 		.we(		i4_we		)
 		);
 `else
-assign ic0_int_set = 0;
-assign ic1_int_set = 0;
+assign ic0_int_set = 1'b0;
+assign ic1_int_set = 1'b0;
 `endif
 
 `ifdef AC97_MICIN
@@ -729,7 +736,7 @@ ac97_int	u25(
 		.we(		i6_we		)
 		);
 `else
-assign ic2_int_set = 0;
+assign ic2_int_set = 1'b0;
 `endif
 
 ac97_rst	u26(

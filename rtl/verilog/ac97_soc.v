@@ -38,16 +38,21 @@
 
 //  CVS Log
 //
-//  $Id: ac97_soc.v,v 1.1 2001-08-03 06:54:50 rudi Exp $
+//  $Id: ac97_soc.v,v 1.2 2002-03-05 04:44:05 rudi Exp $
 //
-//  $Date: 2001-08-03 06:54:50 $
-//  $Revision: 1.1 $
+//  $Date: 2002-03-05 04:44:05 $
+//  $Revision: 1.2 $
 //  $Author: rudi $
 //  $Locker:  $
 //  $State: Exp $
 //
 // Change History:
 //               $Log: not supported by cvs2svn $
+//               Revision 1.1  2001/08/03 06:54:50  rudi
+//
+//
+//               - Changed to new directory structure
+//
 //               Revision 1.1.1.1  2001/05/19 02:29:15  rudi
 //               Initial Checkin
 //
@@ -103,43 +108,43 @@ always @(posedge clk or negedge rst)
 	if(!rst)		cnt <= #1 8'hff;
 	else
 	if(suspended)		cnt <= #1 8'hff;
-	else			cnt <= #1 cnt + 1;
+	else			cnt <= #1 cnt + 8'h1;
 
 always @(posedge clk)
 	ld <= #1 (cnt == 8'h00);
 
 always @(posedge clk)
-	sync_beat <= #1 (cnt == 8'h00) | ((cnt > 0) & (cnt < 16));
+	sync_beat <= #1 (cnt == 8'h00) | ((cnt > 8'h00) & (cnt < 8'h10));
 
 always @(posedge clk)
-	valid <= #1 (cnt > 57);
+	valid <= #1 (cnt > 8'h39);
 
 always @(posedge clk)
-	out_le[0] <= #1 (cnt == 8'd17);		// Slot 0 Latch Enable
+	out_le[0] <= #1 (cnt == 8'h11);		// Slot 0 Latch Enable
 
 always @(posedge clk)
-	out_le[1] <= #1 (cnt == 8'd37);		// Slot 1 Latch Enable
+	out_le[1] <= #1 (cnt == 8'h25);		// Slot 1 Latch Enable
 
 always @(posedge clk)
-	out_le[2] <= #1 (cnt == 8'd57);		// Slot 2 Latch Enable
+	out_le[2] <= #1 (cnt == 8'h39);		// Slot 2 Latch Enable
 
 always @(posedge clk)
-	out_le[3] <= #1 (cnt == 8'd77);		// Slot 3 Latch Enable
+	out_le[3] <= #1 (cnt == 8'h4d);		// Slot 3 Latch Enable
 
 always @(posedge clk)
-	out_le[4] <= #1 (cnt == 8'd97);		// Slot 4 Latch Enable
+	out_le[4] <= #1 (cnt == 8'h61);		// Slot 4 Latch Enable
 
 always @(posedge clk)
-	out_le[5] <= #1 (cnt == 8'd137);	// Slot 6 Latch Enable
+	out_le[5] <= #1 (cnt == 8'h89);		// Slot 6 Latch Enable
 
 always @(posedge clk)
-	in_valid[0] <= #1 (cnt > 8'd77);	// Input Slot 3 Valid
+	in_valid[0] <= #1 (cnt > 8'h4d);	// Input Slot 3 Valid
 
 always @(posedge clk)
-	in_valid[1] <= #1 (cnt > 8'd97);	// Input Slot 3 Valid
+	in_valid[1] <= #1 (cnt > 8'h61);	// Input Slot 3 Valid
 
 always @(posedge clk)
-	in_valid[2] <= #1 (cnt > 8'd137);	// Input Slot 3 Valid
+	in_valid[2] <= #1 (cnt > 8'h89);	// Input Slot 3 Valid
 
 ////////////////////////////////////////////////////////////////////
 //
@@ -158,11 +163,11 @@ always @(posedge wclk)
 assign to = (to_cnt == `AC97_SUSP_DET);
 
 always @(posedge wclk or negedge rst)
-	if(!rst)		to_cnt <= #1 0;
+	if(!rst)		to_cnt <= #1 6'h0;
 	else
-	if(bit_clk_e)		to_cnt <= #1 0;
+	if(bit_clk_e)		to_cnt <= #1 6'h0;
 	else
-	if(!to)			to_cnt <= #1 to_cnt + 1;
+	if(!to)			to_cnt <= #1 to_cnt + 6'h1;
 
 ////////////////////////////////////////////////////////////////////
 //
@@ -170,17 +175,17 @@ always @(posedge wclk or negedge rst)
 //
 
 always @(posedge wclk or negedge rst)
-	if(!rst)			sync_resume <= #1 0;
+	if(!rst)			sync_resume <= #1 1'b0;
 	else
-	if(resume_done)			sync_resume <= #1 0;
+	if(resume_done)			sync_resume <= #1 1'b0;
 	else
-	if(suspended & resume)		sync_resume <= #1 1;
+	if(suspended & resume)		sync_resume <= #1 1'b1;
 
 assign resume_done = (res_cnt == `AC97_RES_SIG);
 
 always @(posedge wclk)
-	if(!sync_resume)	res_cnt <= #1 0;
+	if(!sync_resume)	res_cnt <= #1 4'h0;
 	else
-	if(ps_ce)		res_cnt <= #1 res_cnt + 1;
+	if(ps_ce)		res_cnt <= #1 res_cnt + 4'h1;
 
 endmodule

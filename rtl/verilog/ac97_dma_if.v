@@ -38,16 +38,23 @@
 
 //  CVS Log
 //
-//  $Id: ac97_dma_if.v,v 1.2 2001-08-10 08:09:42 rudi Exp $
+//  $Id: ac97_dma_if.v,v 1.3 2002-03-05 04:44:05 rudi Exp $
 //
-//  $Date: 2001-08-10 08:09:42 $
-//  $Revision: 1.2 $
+//  $Date: 2002-03-05 04:44:05 $
+//  $Revision: 1.3 $
 //  $Author: rudi $
 //  $Locker:  $
 //  $State: Exp $
 //
 // Change History:
 //               $Log: not supported by cvs2svn $
+//               Revision 1.2  2001/08/10 08:09:42  rudi
+//
+//               - Removed RTY_O output.
+//               - Added Clock and Reset Inputs to documentation.
+//               - Changed IO names to be more clear.
+//               - Uniquifyed define names to be core specific.
+//
 //               Revision 1.1  2001/08/03 06:54:49  rudi
 //
 //
@@ -123,7 +130,7 @@ ac97_dma_req u2(.clk(		clk		),
 		.dma_ack(	dma_ack[2]	)
 		);
 `else
-assign dma_req[2] = 0;
+assign dma_req[2] = 1'b0;
 `endif
 
 `ifdef AC97_SURROUND
@@ -145,8 +152,8 @@ ac97_dma_req u4(.clk(		clk		),
 		.dma_ack(	dma_ack[4]	)
 		);
 `else
-assign dma_req[3] = 0;
-assign dma_req[4] = 0;
+assign dma_req[3] = 1'b0;
+assign dma_req[4] = 1'b0;
 `endif
 
 `ifdef AC97_LFE
@@ -159,7 +166,7 @@ ac97_dma_req u5(.clk(		clk		),
 		.dma_ack(	dma_ack[5]	)
 		);
 `else
-assign dma_req[5] = 0;
+assign dma_req[5] = 1'b0;
 `endif
 
 `ifdef AC97_SIN
@@ -181,8 +188,8 @@ ac97_dma_req u7(.clk(		clk		),
 		.dma_ack(	dma_ack[7]	)
 		);
 `else
-assign dma_req[6] = 0;
-assign dma_req[7] = 0;
+assign dma_req[6] = 1'b0;
+assign dma_req[7] = 1'b0;
 `endif
 
 `ifdef AC97_MICIN
@@ -195,7 +202,7 @@ ac97_dma_req u8(.clk(		clk		),
 		.dma_ack(	dma_ack[8]	)
 		);
 `else
-assign dma_req[8] = 0;
+assign dma_req[8] = 1'b0;
 `endif
 
 endmodule

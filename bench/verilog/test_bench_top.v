@@ -37,16 +37,20 @@
 
 //  CVS Log
 //
-//  $Id: test_bench_top.v,v 1.1 2002-02-13 08:22:32 rudi Exp $
+//  $Id: test_bench_top.v,v 1.2 2002-03-05 04:44:04 rudi Exp $
 //
-//  $Date: 2002-02-13 08:22:32 $
-//  $Revision: 1.1 $
+//  $Date: 2002-03-05 04:44:04 $
+//  $Revision: 1.2 $
 //  $Author: rudi $
 //  $Locker:  $
 //  $State: Exp $
 //
 // Change History:
 //               $Log: not supported by cvs2svn $
+//               Revision 1.1  2002/02/13 08:22:32  rudi
+//
+//               Added test bench for public release
+//
 //
 //
 //                        
@@ -113,8 +117,19 @@ integer		ic0_ptr;
 integer		ic1_ptr;
 integer		ic2_ptr;
 
+integer		oc0_th;
+integer		oc1_th;
+integer		oc2_th;
+integer		oc3_th;
+integer		oc4_th;
+integer		oc5_th;
+integer		ic0_th;
+integer		ic1_th;
+integer		ic2_th;
+
 reg	[31:0]	ints_r;
 reg		int_chk_en;
+reg		int_ctrl_en;
 integer		int_cnt;
 
 integer		n;
@@ -201,6 +216,7 @@ initial
 `endif
 	//wd_cnt = 0;
 	int_chk_en = 1;
+	int_ctrl_en = 0;
 	int_cnt = 0;
 	error_cnt = 0;
    	clk = 1;
@@ -238,7 +254,7 @@ initial
 
 	// HERE IS WHERE THE TEST CASES GO ...
 
-if(0)	// Full Regression Run
+if(1)	// Full Regression Run
    begin
 $display(" ......................................................");
 $display(" :                                                    :");
@@ -255,6 +271,8 @@ $display(" :....................................................:");
 
 	vsr1;
 
+	vsr_int;
+
    end
 else
 if(1)	// Debug Tests
@@ -264,15 +282,17 @@ $display(" :                                                    :");
 $display(" :    Test Debug Testing ...                          :");
 $display(" :....................................................:");
 
-	basic1;
+	//basic1;
 
-	do_rst;
+	//do_rst;
 
-	basic2;
+	//basic2;
 
-	do_rst;
+	//do_rst;
 
-	vsr1;
+	//vsr1;
+
+	vsr_int;
 
 	repeat(100)	@(posedge clk);
 	$finish;
@@ -598,6 +618,7 @@ endtask
 //
 
 always @(posedge clk)
+begin
 if(int & int_chk_en)
    begin
 	while(wb_busy)	@(posedge clk);
@@ -607,6 +628,125 @@ if(int & int_chk_en)
 	wb_busy = 0;
 	int_cnt = int_cnt + 1;
    end
+if(int & int_ctrl_en)
+   begin
+
+	while(wb_busy)	@(posedge clk);
+	wb_busy = 1;
+	m0.wb_rd1(`INTS,4'hf, ints_r);
+	//$display("INFO: Got Interrupt (%0d). INTS: %h (%t)", int_cnt, ints_r, $time);
+
+	out_chan_int_handl(ints_r[04:02],0);
+	out_chan_int_handl(ints_r[07:05],1);
+	out_chan_int_handl(ints_r[10:08],2);
+	out_chan_int_handl(ints_r[13:11],3);
+	out_chan_int_handl(ints_r[16:14],4);
+	out_chan_int_handl(ints_r[19:17],5);
+
+	in_chan_int_handl(ints_r[22:20],0);
+	in_chan_int_handl(ints_r[25:23],1);
+	in_chan_int_handl(ints_r[28:26],2);
+
+	m0.wb_rd1(`INTS,4'hf, ints_r);
+	wb_busy = 0;
+	int_cnt = int_cnt + 1;
+   end
+end
+
+
+task out_chan_int_handl;
+input	[2:0]	int_r;
+input		ch;
+
+reg	[2:0]	int_r;
+integer		ch;
+integer		p;
+
+begin
+
+	if(int_r[0])	// Output Channel at Thrash hold
+	   begin
+		case(ch)
+		0: begin
+			for(p=0;p<oc0_th;p=p+1)
+				m0.wb_wr1(`OC0,4'hf, oc0_mem[oc0_ptr+p]	);
+			oc0_ptr = oc0_ptr + oc0_th;
+		   end
+		1: begin
+			for(p=0;p<oc1_th;p=p+1)
+				m0.wb_wr1(`OC1,4'hf, oc1_mem[oc1_ptr+p]	);
+			oc1_ptr = oc1_ptr + oc1_th;
+		   end
+		2: begin
+			for(p=0;p<oc2_th;p=p+1)
+				m0.wb_wr1(`OC2,4'hf, oc2_mem[oc2_ptr+p]	);
+			oc2_ptr = oc2_ptr + oc2_th;
+		   end
+		3: begin
+			for(p=0;p<oc3_th;p=p+1)
+				m0.wb_wr1(`OC3,4'hf, oc3_mem[oc3_ptr+p]	);
+			oc3_ptr = oc3_ptr + oc3_th;
+		   end
+		4: begin
+			for(p=0;p<oc4_th;p=p+1)
+				m0.wb_wr1(`OC4,4'hf, oc4_mem[oc4_ptr+p]	);
+			oc4_ptr = oc4_ptr + oc4_th;
+		   end
+		5: begin
+			for(p=0;p<oc5_th;p=p+1)
+				m0.wb_wr1(`OC5,4'hf, oc5_mem[oc5_ptr+p]	);
+			oc5_ptr = oc5_ptr + oc5_th;
+		   end
+		endcase
+	   end
+	if(int_r[1])	// Output Channel FIFO Underrun
+		$display("ERROR: Output Channel %0d FIFO Underrun", ch);
+
+	if(int_r[2])	// Output Channel FIFO Overun
+		$display("ERROR: Output Channel %0d FIFO Ovverun", ch);
+end
+endtask
+
+
+
+task in_chan_int_handl;
+input	[2:0]	int_r;
+input		ch;
+
+reg	[2:0]	int_r;
+integer		ch;
+integer		p;
+
+begin
+	if(int_r[0])	// Input Channel at Thrash hold
+	   begin
+		case(ch)
+		0: begin
+			for(p=0;p<ic0_th;p=p+1)
+				m0.wb_rd1(`IC0,4'hf, ic0_mem[ic0_ptr+p]	);
+			ic0_ptr = ic0_ptr + ic0_th;
+		   end
+		1: begin
+			for(p=0;p<ic1_th;p=p+1)
+				m0.wb_rd1(`IC1,4'hf, ic1_mem[ic1_ptr+p]	);
+			ic1_ptr = ic1_ptr + ic1_th;
+		   end
+		2: begin
+			for(p=0;p<ic2_th;p=p+1)
+				m0.wb_rd1(`IC2,4'hf, ic2_mem[ic2_ptr+p]	);
+			ic2_ptr = ic2_ptr + ic2_th;
+		   end
+		endcase
+	   end
+	if(int_r[1])	// Input Channel FIFO Underrun
+		$display("ERROR: Input Channel %0d FIFO Underrun", ch);
+
+	if(int_r[2])	// Input Channel FIFO Overun
+		$display("ERROR: Input Channel %0d FIFO Ovverun", ch);
+end
+endtask
+
+
 
 /////////////////////////////////////////////////////////////////////
 //
@@ -767,6 +907,7 @@ if(ic2_dma_en & dma_req[8])
 //
 
 always #2.5	clk = ~clk;
+//always #15	clk = ~clk;
 
 always #40.69	bit_clk <= ~bit_clk;
 

@@ -38,16 +38,21 @@
 
 //  CVS Log
 //
-//  $Id: ac97_cra.v,v 1.1 2001-08-03 06:54:49 rudi Exp $
+//  $Id: ac97_cra.v,v 1.2 2002-03-05 04:44:05 rudi Exp $
 //
-//  $Date: 2001-08-03 06:54:49 $
-//  $Revision: 1.1 $
+//  $Date: 2002-03-05 04:44:05 $
+//  $Revision: 1.2 $
 //  $Author: rudi $
 //  $Locker:  $
 //  $State: Exp $
 //
 // Change History:
 //               $Log: not supported by cvs2svn $
+//               Revision 1.1  2001/08/03 06:54:49  rudi
+//
+//
+//               - Changed to new directory structure
+//
 //               Revision 1.1.1.1  2001/05/19 02:29:18  rudi
 //               Initial Checkin
 //
@@ -130,41 +135,41 @@ always @(posedge clk)
 	crac_we_r <= #1 crac_we;
 
 always @(posedge clk or negedge rst)
-	if(!rst)			crac_wr <= #1 0;
+	if(!rst)			crac_wr <= #1 1'b0;
 	else
-	if(crac_we_r & !crac_out[31])	crac_wr <= #1 1;
+	if(crac_we_r & !crac_out[31])	crac_wr <= #1 1'b1;
 	else
-	if(valid_ne)			crac_wr <= #1 0;
+	if(valid_ne)			crac_wr <= #1 1'b0;
 
 assign crac_wr_done = crac_wr & valid_ne;
 
 always @(posedge clk or negedge rst)
-	if(!rst)			crac_rd <= #1 0;
+	if(!rst)			crac_rd <= #1 1'b0;
 	else
-	if(crac_we_r & crac_out[31])	crac_rd <= #1 1;
+	if(crac_we_r & crac_out[31])	crac_rd <= #1 1'b1;
 	else
-	if(rdd1 & valid_pe)		crac_rd <= #1 0;
+	if(rdd1 & valid_pe)		crac_rd <= #1 1'b0;
 
 always @(posedge clk or negedge rst)
-	if(!rst)		rdd1 <= #1 0;
+	if(!rst)		rdd1 <= #1 1'b0;
 	else
-	if(crac_rd & valid_ne)	rdd1 <= #1 1;
+	if(crac_rd & valid_ne)	rdd1 <= #1 1'b1;
 	else
-	if(!crac_rd)		rdd1 <= #1 0;
+	if(!crac_rd)		rdd1 <= #1 1'b0;
 
 always @(posedge clk or negedge rst)
-	if(!rst)					rdd2 <= #1 0;
+	if(!rst)					rdd2 <= #1 1'b0;
 	else
-	if( (crac_rd & valid_ne) | (!rdd3 & rdd2) )	rdd2 <= #1 1;
+	if( (crac_rd & valid_ne) | (!rdd3 & rdd2) )	rdd2 <= #1 1'b1;
 	else
-	if(crac_rd_done)				rdd2 <= #1 0;
+	if(crac_rd_done)				rdd2 <= #1 1'b0;
 
 always @(posedge clk or negedge rst)
-	if(!rst)		rdd3 <= #1 0;
+	if(!rst)		rdd3 <= #1 1'b0;
 	else
-	if(rdd2 & valid_pe)	rdd3 <= #1 1;
+	if(rdd2 & valid_pe)	rdd3 <= #1 1'b1;
 	else
-	if(crac_rd_done)	rdd3 <= #1 0;
+	if(crac_rd_done)	rdd3 <= #1 1'b0;
 
 always @(posedge clk)
 	crac_rd_done <= #1 rdd3 & valid_pe;

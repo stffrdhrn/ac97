@@ -38,16 +38,23 @@
 
 //  CVS Log
 //
-//  $Id: ac97_prc.v,v 1.2 2001-08-10 08:09:42 rudi Exp $
+//  $Id: ac97_prc.v,v 1.3 2002-03-05 04:44:05 rudi Exp $
 //
-//  $Date: 2001-08-10 08:09:42 $
-//  $Revision: 1.2 $
+//  $Date: 2002-03-05 04:44:05 $
+//  $Revision: 1.3 $
 //  $Author: rudi $
 //  $Locker:  $
 //  $State: Exp $
 //
 // Change History:
 //               $Log: not supported by cvs2svn $
+//               Revision 1.2  2001/08/10 08:09:42  rudi
+//
+//               - Removed RTY_O output.
+//               - Added Clock and Reset Inputs to documentation.
+//               - Changed IO names to be more clear.
+//               - Uniquifyed define names to be core specific.
+//
 //               Revision 1.1  2001/08/03 06:54:50  rudi
 //
 //
@@ -153,7 +160,7 @@ assign out_slt0[13] = crac_wr_r;
 
 assign out_slt0[12] = o3_re_l;
 assign out_slt0[11] = o4_re_l;
-assign out_slt0[10] = 0;
+assign out_slt0[10] = 1'b0;
 assign out_slt0[09] = o6_re_l;
 assign out_slt0[08] = o7_re_l;
 assign out_slt0[07] = o8_re_l;
@@ -211,8 +218,8 @@ ac97_fifo_ctrl u2(
 		.en_out_l(	o6_re_l		)
 		);
 `else
-assign o6_re = 0;
-assign o6_re_l = 0;
+assign o6_re = 1'b0;
+assign o6_re_l = 1'b0;
 `endif
 
 `ifdef AC97_SURROUND
@@ -242,10 +249,10 @@ ac97_fifo_ctrl u4(
 		.en_out_l(	o8_re_l		)
 		);
 `else
-assign o7_re = 0;
-assign o7_re_l = 0;
-assign o8_re = 0;
-assign o8_re_l = 0;
+assign o7_re = 1'b0;
+assign o7_re_l = 1'b0;
+assign o8_re = 1'b0;
+assign o8_re_l = 1'b0;
 `endif
 
 `ifdef AC97_LFE
@@ -262,8 +269,8 @@ ac97_fifo_ctrl u5(
 		.en_out_l(	o9_re_l		)
 		);
 `else
-assign o9_re = 0;
-assign o9_re_l = 0;
+assign o9_re = 1'b0;
+assign o9_re_l = 1'b0;
 `endif
 
 `ifdef AC97_SIN
@@ -293,8 +300,8 @@ ac97_fifo_ctrl u7(
 		.en_out_l(			)
 		);
 `else
-assign i3_we = 0;
-assign i4_we = 0;
+assign i3_we = 1'b0;
+assign i4_we = 1'b0;
 `endif
 
 `ifdef AC97_MICIN
@@ -311,7 +318,7 @@ ac97_fifo_ctrl u8(
 		.en_out_l(			)
 		);
 `else
-assign i6_we = 0;
+assign i6_we = 1'b0;
 `endif
 
 endmodule

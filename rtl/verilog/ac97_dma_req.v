@@ -38,16 +38,21 @@
 
 //  CVS Log
 //
-//  $Id: ac97_dma_req.v,v 1.1 2001-08-03 06:54:49 rudi Exp $
+//  $Id: ac97_dma_req.v,v 1.2 2002-03-05 04:44:05 rudi Exp $
 //
-//  $Date: 2001-08-03 06:54:49 $
-//  $Revision: 1.1 $
+//  $Date: 2002-03-05 04:44:05 $
+//  $Revision: 1.2 $
 //  $Author: rudi $
 //  $Locker:  $
 //  $State: Exp $
 //
 // Change History:
 //               $Log: not supported by cvs2svn $
+//               Revision 1.1  2001/08/03 06:54:49  rudi
+//
+//
+//               - Changed to new directory structure
+//
 //               Revision 1.1.1.1  2001/05/19 02:29:16  rudi
 //               Initial Checkin
 //
@@ -82,23 +87,23 @@ always @(cfg or status or full_empty)
 	case(cfg[5:4])	// synopsys parallel_case full_case
 			// REQ = Ch_EN & DMA_EN & Status
 			// 1/4 full/empty
-	   0: dma_req_d = cfg[0] & cfg[6] & (full_empty | (status == 2'd0));
+	   2'h2: dma_req_d = cfg[0] & cfg[6] & (full_empty | (status == 2'h0));
 			// 1/2 full/empty
-	   1: dma_req_d = cfg[0] & cfg[6] & (full_empty | (status[1] == 1'd0));
+	   2'h1: dma_req_d = cfg[0] & cfg[6] & (full_empty | (status[1] == 1'h0));
 			// 3/4 full/empty
-	   2: dma_req_d = cfg[0] & cfg[6] & (full_empty | (status < 2'd3));
-	   3: dma_req_d = cfg[0] & cfg[6] & full_empty;
+	   2'h0: dma_req_d = cfg[0] & cfg[6] & (full_empty | (status < 2'h3));
+	   2'h3: dma_req_d = cfg[0] & cfg[6] & full_empty;
 	endcase
 
 always @(posedge clk)
 	dma_req_r1 <= #1 dma_req_d & !dma_ack;
 
 always @(posedge clk or negedge rst)
-	if(!rst)				dma_req <= #1 0;
+	if(!rst)				dma_req <= #1 1'b0;
 	else
-	if(dma_req_r1 & dma_req_d & !dma_ack) 	dma_req <= #1 1;
+	if(dma_req_r1 & dma_req_d & !dma_ack) 	dma_req <= #1 1'b1;
 	else
-	if(dma_ack) 				dma_req <= #1 0;
+	if(dma_ack) 				dma_req <= #1 1'b0;
 
 endmodule
 

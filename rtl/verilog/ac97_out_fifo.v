@@ -38,16 +38,21 @@
 
 //  CVS Log
 //
-//  $Id: ac97_out_fifo.v,v 1.1 2001-08-03 06:54:50 rudi Exp $
+//  $Id: ac97_out_fifo.v,v 1.2 2002-03-05 04:44:05 rudi Exp $
 //
-//  $Date: 2001-08-03 06:54:50 $
-//  $Revision: 1.1 $
+//  $Date: 2002-03-05 04:44:05 $
+//  $Revision: 1.2 $
 //  $Author: rudi $
 //  $Locker:  $
 //  $State: Exp $
 //
 // Change History:
 //               $Log: not supported by cvs2svn $
+//               Revision 1.1  2001/08/03 06:54:50  rudi
+//
+//
+//               - Changed to new directory structure
+//
 //               Revision 1.1.1.1  2001/05/19 02:29:16  rudi
 //               Initial Checkin
 //
@@ -98,23 +103,23 @@ reg		empty;
 assign m16b = (mode == 2'h0);	// 16 Bit Mode
 
 always @(posedge clk)
-	if(!en)		wp <= #1 0;
+	if(!en)		wp <= #1 3'h0;
 	else
 	if(we)		wp <= #1 wp_p1;
 
-assign wp_p1 = wp + 1;
+assign wp_p1 = wp + 3'h1;
 
 always @(posedge clk)
-	if(!en)		rp <= #1 0;
+	if(!en)		rp <= #1 4'h0;
 	else
-	if(re & m16b)	rp <= #1 rp + 1;
+	if(re & m16b)	rp <= #1 rp + 4'h1;
 	else
-	if(re & !m16b)	rp <= #1 rp + 2;
+	if(re & !m16b)	rp <= #1 rp + 4'h2;
 
 always @(posedge clk)
-	status <= #1 (wp[1:0] - rp[2:1]) - 1;
+	status <= #1 (wp[1:0] - rp[2:1]) - 2'h1;
 
-wire	[3:0]	rp_p1 = rp[3:0] + 1;
+wire	[3:0]	rp_p1 = rp[3:0] + 4'h1;
 
 always @(posedge clk)
 	empty <= #1 (rp_p1[3:1] == wp[2:0]) & (m16b ? rp_p1[0] : 1'b1);
@@ -137,8 +142,8 @@ always @(posedge clk)
 		   2: dout <= #1 dout_tmp[19:0];		// 20 Bit Output
 		endcase
 
-
 always @(posedge clk)
 	if(we)	mem[wp[1:0]] <= #1 din;
 
 endmodule
+

@@ -37,16 +37,23 @@
 
 //  CVS Log
 //
-//  $Id: ac97_defines.v,v 1.2 2001-08-10 08:09:42 rudi Exp $
+//  $Id: ac97_defines.v,v 1.3 2002-03-05 04:44:05 rudi Exp $
 //
-//  $Date: 2001-08-10 08:09:42 $
-//  $Revision: 1.2 $
+//  $Date: 2002-03-05 04:44:05 $
+//  $Revision: 1.3 $
 //  $Author: rudi $
 //  $Locker:  $
 //  $State: Exp $
 //
 // Change History:
 //               $Log: not supported by cvs2svn $
+//               Revision 1.2  2001/08/10 08:09:42  rudi
+//
+//               - Removed RTY_O output.
+//               - Added Clock and Reset Inputs to documentation.
+//               - Changed IO names to be more clear.
+//               - Uniquifyed define names to be core specific.
+//
 //               Revision 1.1  2001/08/03 06:54:49  rudi
 //
 //
@@ -68,7 +75,7 @@
 // are always supported. 
 
 // Surround Left + Right
-`define AC97_SURROUND	1
+`define AC97_SURROUND		1
 
 // Center Channel
 `define AC97_CENTER		1
@@ -96,7 +103,7 @@
 // The value here should one less than the actually calculated
 // value.
 // For a 200 MHz wishbone clock, this value is 49 (50-1).
-`define	AC97_250_PS	6'd49
+`define	AC97_250_PS	6'h31
 
 /////////////////////////////////////////////////////////////////////
 //
@@ -105,7 +112,7 @@
 // The reset timer is driven by the AC97_250_PS prescaler.
 // This value should probably be never changed. Adjust the
 // AC97_250_PS instead.
-`define	AC97_RST_DEL	3'd4
+`define	AC97_RST_DEL	3'h4
 
 /////////////////////////////////////////////////////////////////////
 //
@@ -116,7 +123,7 @@
 // the current state of the prescaler, and must somehow insure we
 // meet the minimum 1uS length. This value should probably be never
 // changed. Modify the AC97_250_PS instead.
-`define AC97_RES_SIG	3'd5
+`define AC97_RES_SIG	3'h5
 
 /////////////////////////////////////////////////////////////////////
 //
@@ -125,5 +132,5 @@
 // This value defines how many WISHBONE cycles must pass without
 // any change on the bit clock input before we signal "suspended".
 // For a 200 MHz WISHBONE clock this would be about (163/5) 33 cycles.
-`define AC97_SUSP_DET	6'd33
+`define AC97_SUSP_DET	6'h21
 

@@ -38,16 +38,23 @@
 
 //  CVS Log
 //
-//  $Id: ac97_rf.v,v 1.2 2001-08-10 08:09:42 rudi Exp $
+//  $Id: ac97_rf.v,v 1.3 2002-03-05 04:44:05 rudi Exp $
 //
-//  $Date: 2001-08-10 08:09:42 $
-//  $Revision: 1.2 $
+//  $Date: 2002-03-05 04:44:05 $
+//  $Revision: 1.3 $
 //  $Author: rudi $
 //  $Locker:  $
 //  $State: Exp $
 //
 // Change History:
 //               $Log: not supported by cvs2svn $
+//               Revision 1.2  2001/08/10 08:09:42  rudi
+//
+//               - Removed RTY_O output.
+//               - Added Clock and Reset Inputs to documentation.
+//               - Changed IO names to be more clear.
+//               - Uniquifyed define names to be core specific.
+//
 //               Revision 1.1  2001/08/03 06:54:50  rudi
 //
 //
@@ -166,37 +173,37 @@ always @(adr or csr or occ0 or occ1 or icc or crac or intm or ints)
 	endcase
 
 always @(posedge clk or negedge rst)
-	if(!rst)			csr_r <= #1 0;
+	if(!rst)			csr_r <= #1 1'b0;
 	else
-	if(rf_we & (adr[2:0]==0))	csr_r <= #1 rf_din;
+	if(rf_we & (adr[2:0]==3'h0))	csr_r <= #1 rf_din;
 
 always @(posedge clk)
-	if(rf_we & (adr[2:0]==0))	ac97_rst_force <= #1 rf_din[0];
-	else				ac97_rst_force <= #1 0;
+	if(rf_we & (adr[2:0]==3'h0))	ac97_rst_force <= #1 rf_din[0];
+	else				ac97_rst_force <= #1 1'b0;
 
 always @(posedge clk)
-	if(rf_we & (adr[2:0]==0))	resume_req <= #1 rf_din[1];
-	else				resume_req <= #1 0;
+	if(rf_we & (adr[2:0]==3'h0))	resume_req <= #1 rf_din[1];
+	else				resume_req <= #1 1'b0;
 
 always @(posedge clk or negedge rst)
-	if(!rst)			occ0_r <= #1 0;
+	if(!rst)			occ0_r <= #1 1'b0;
 	else
-	if(rf_we & (adr[2:0]==1))	occ0_r <= #1 rf_din;
+	if(rf_we & (adr[2:0]==3'h1))	occ0_r <= #1 rf_din;
 
 always @(posedge clk or negedge rst)
-	if(!rst)			occ1_r <= #1 0;
+	if(!rst)			occ1_r <= #1 1'b0;
 	else
-	if(rf_we & (adr[2:0]==2))	occ1_r <= #1 rf_din[23:0];
+	if(rf_we & (adr[2:0]==3'h2))	occ1_r <= #1 rf_din[23:0];
 
 always @(posedge clk or negedge rst)
-	if(!rst)			icc_r <= #1 0;
+	if(!rst)			icc_r <= #1 1'b0;
 	else
-	if(rf_we & (adr[2:0]==3))	icc_r <= #1 rf_din[23:0];
+	if(rf_we & (adr[2:0]==3'h3))	icc_r <= #1 rf_din[23:0];
 
-assign crac_we = rf_we & (adr[2:0]==4);
+assign crac_we = rf_we & (adr[2:0]==3'h4);
 
 always @(posedge clk or negedge rst)
-	if(!rst)			crac_r <= #1 0;
+	if(!rst)			crac_r <= #1 1'b0;
 	else
 	if(crac_we) 			crac_r <= #1 {rf_din[31], rf_din[22:16]};
 
@@ -204,59 +211,59 @@ always @(posedge clk)
 	if(crac_we)			crac_dout_r <= #1 rf_din[15:0];
 
 always @(posedge clk or negedge rst)
-	if(!rst)			intm_r <= #1 0;
+	if(!rst)			intm_r <= #1 1'b0;
 	else
-	if(rf_we & (adr[2:0]==5))	intm_r <= #1 rf_din[28:0];
+	if(rf_we & (adr[2:0]==3'h5))	intm_r <= #1 rf_din[28:0];
 
 // Interrupt Source Register
 always @(posedge clk or negedge rst)
-	if(!rst)			ints_r <= #1 0;
+	if(!rst)			ints_r <= #1 1'b0;
 	else
-	if(rf_re & (adr[2:0]==6))	ints_r <= #1 0;
+	if(rf_re & (adr[2:0]==3'h6))	ints_r <= #1 1'b0;
 	else
 	   begin
-		if(crac_rd_done)	ints_r[0] <= #1 1;
-		if(crac_wr_done)	ints_r[1] <= #1 1;
-		if(oc0_int_set[0])	ints_r[2] <= #1 1;
-		if(oc0_int_set[1])	ints_r[3] <= #1 1;
-		if(oc0_int_set[2])	ints_r[4] <= #1 1;
-		if(oc1_int_set[0])	ints_r[5] <= #1 1;
-		if(oc1_int_set[1])	ints_r[6] <= #1 1;
-		if(oc1_int_set[2])	ints_r[7] <= #1 1;
+		if(crac_rd_done)	ints_r[0] <= #1 1'b1;
+		if(crac_wr_done)	ints_r[1] <= #1 1'b1;
+		if(oc0_int_set[0])	ints_r[2] <= #1 1'b1;
+		if(oc0_int_set[1])	ints_r[3] <= #1 1'b1;
+		if(oc0_int_set[2])	ints_r[4] <= #1 1'b1;
+		if(oc1_int_set[0])	ints_r[5] <= #1 1'b1;
+		if(oc1_int_set[1])	ints_r[6] <= #1 1'b1;
+		if(oc1_int_set[2])	ints_r[7] <= #1 1'b1;
 `ifdef AC97_CENTER
-		if(oc2_int_set[0])	ints_r[8] <= #1 1;
-		if(oc2_int_set[1])	ints_r[9] <= #1 1;
-		if(oc2_int_set[2])	ints_r[10] <= #1 1;
+		if(oc2_int_set[0])	ints_r[8] <= #1 1'b1;
+		if(oc2_int_set[1])	ints_r[9] <= #1 1'b1;
+		if(oc2_int_set[2])	ints_r[10] <= #1 1'b1;
 `endif
 
 `ifdef AC97_SURROUND
-		if(oc3_int_set[0])	ints_r[11] <= #1 1;
-		if(oc3_int_set[1])	ints_r[12] <= #1 1;
-		if(oc3_int_set[2])	ints_r[13] <= #1 1;
-		if(oc4_int_set[0])	ints_r[14] <= #1 1;
-		if(oc4_int_set[1])	ints_r[15] <= #1 1;
-		if(oc4_int_set[2])	ints_r[16] <= #1 1;
+		if(oc3_int_set[0])	ints_r[11] <= #1 1'b1;
+		if(oc3_int_set[1])	ints_r[12] <= #1 1'b1;
+		if(oc3_int_set[2])	ints_r[13] <= #1 1'b1;
+		if(oc4_int_set[0])	ints_r[14] <= #1 1'b1;
+		if(oc4_int_set[1])	ints_r[15] <= #1 1'b1;
+		if(oc4_int_set[2])	ints_r[16] <= #1 1'b1;
 `endif
 
 `ifdef AC97_LFE
-		if(oc5_int_set[0])	ints_r[17] <= #1 1;
-		if(oc5_int_set[1])	ints_r[18] <= #1 1;
-		if(oc5_int_set[2])	ints_r[19] <= #1 1;
+		if(oc5_int_set[0])	ints_r[17] <= #1 1'b1;
+		if(oc5_int_set[1])	ints_r[18] <= #1 1'b1;
+		if(oc5_int_set[2])	ints_r[19] <= #1 1'b1;
 `endif
 
 `ifdef AC97_SIN
-		if(ic0_int_set[0])	ints_r[20] <= #1 1;
-		if(ic0_int_set[1])	ints_r[21] <= #1 1;
-		if(ic0_int_set[2])	ints_r[22] <= #1 1;
-		if(ic1_int_set[0])	ints_r[23] <= #1 1;
-		if(ic1_int_set[1])	ints_r[24] <= #1 1;
-		if(ic1_int_set[2])	ints_r[25] <= #1 1;
+		if(ic0_int_set[0])	ints_r[20] <= #1 1'b1;
+		if(ic0_int_set[1])	ints_r[21] <= #1 1'b1;
+		if(ic0_int_set[2])	ints_r[22] <= #1 1'b1;
+		if(ic1_int_set[0])	ints_r[23] <= #1 1'b1;
+		if(ic1_int_set[1])	ints_r[24] <= #1 1'b1;
+		if(ic1_int_set[2])	ints_r[25] <= #1 1'b1;
 `endif
 
 `ifdef AC97_MICIN
-		if(ic2_int_set[0])	ints_r[26] <= #1 1;
-		if(ic2_int_set[1])	ints_r[27] <= #1 1;
-		if(ic2_int_set[2])	ints_r[28] <= #1 1;
+		if(ic2_int_set[0])	ints_r[26] <= #1 1'b1;
+		if(ic2_int_set[1])	ints_r[27] <= #1 1'b1;
+		if(ic2_int_set[2])	ints_r[28] <= #1 1'b1;
 `endif
 	   end
 
